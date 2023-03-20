@@ -1,6 +1,8 @@
 package org.ranG.genData;
 
 import org.luaj.vm2.Globals;
+import org.luaj.vm2.LoadState;
+import org.luaj.vm2.Lua;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
@@ -33,7 +35,10 @@ public class DdlGenerator {
                 Path filePath = Path.of(zzPath);
                 zzStr = Files.readString(filePath);
                 Globals globals = JsePlatform.standardGlobals();
-                LuaValue code = globals.loadfile("D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\default.zz.lua");
+                LuaValue code = globals.loadfile(zzPath);
+                LuaValue zzInfo = code.call(); /* 使用call 的时候，就执行了这段脚本 */
+
+
 
             }
 
