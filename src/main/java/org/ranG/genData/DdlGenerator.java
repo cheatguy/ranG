@@ -35,6 +35,7 @@ public class DdlGenerator {
             LuaValue code = globals.loadfile(zzPath).call();
             Tables tb = new Tables("","tables",code);
             Fields fd = new Fields("","fields",code);
+            Data data = new Data("",code);
             System.out.println("test");
 
             /*iter the value */
