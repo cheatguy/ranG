@@ -1,9 +1,6 @@
 package org.ranG.genData;
 
-import org.luaj.vm2.Globals;
-import org.luaj.vm2.LoadState;
-import org.luaj.vm2.Lua;
-import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.*;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
 import java.nio.file.Files;
@@ -17,7 +14,8 @@ import static org.ranG.Main.zzPath;
 
 public class DdlGenerator {
     String dsn;
-
+    /* double? ,not sure this global can be used in LuaParser */
+    static Globals globals = JsePlatform.standardGlobals();
     public void setDsn(String dsn){
         this.dsn = dsn;
     }
@@ -27,24 +25,34 @@ public class DdlGenerator {
      */
     public List<String> getDdl() {
 
-        try{
-            String zzStr ;
-            if (zzPath.isEmpty()){
-                zzPath = "D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\default.zz.lua";
-            }else{
-                Path filePath = Path.of(zzPath);
-                zzStr = Files.readString(filePath);
-                Globals globals = JsePlatform.standardGlobals();
-                LuaValue code = globals.loadfile(zzPath);
-                LuaValue zzInfo = code.call(); /* 使用call 的时候，就执行了这段脚本 */
+
+        String zzStr ;
+        if (zzPath.isEmpty()){
+            zzPath = "D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\default.zz.lua";
+        }else{
+            Path filePath = Path.of(zzPath);
+
+            LuaValue code = globals.loadfile(zzPath).call();
+            Tables tb = new Tables("","tables",code);
+            Fields fd = new Fields("","fields",code);
+            System.out.println("test");
+
+            /*iter the value */
+//                LuaValue k = LuaValue.NIL;
+//                while(true){
+//                    Varargs n = vRow.next(k);
+//                    if ( (k = n.arg1()).isnil() )
+//                        break;
+//                    LuaValue v = n.arg(2);
+//                    System.out.println(v.toint());
+//                }
 
 
 
-            }
 
-        }  catch (IOException e) {
-            throw new RuntimeException(e);
+
         }
+
 
 
 
