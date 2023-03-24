@@ -1,5 +1,6 @@
 package org.ranG.genData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.luaj.vm2.LuaValue;
@@ -61,8 +62,20 @@ public class Data {
             return this.constant;
         }
     }
+
+    public Generator composeFromGenName(String[] genNames){
+        ArrayList <String> gn = new ArrayList<>();
+//        for(String s:genNames){
+//
+//        }
+    }
     Data(String key,LuaValue l){
         LuaParser parser = new LuaParser();
-        parser.extractAllSlice("data",dataType);
+        HashMap<String, ArrayList<String>> datas = parser.extractAllSlice("data",dataType);
+        HashMap<String,Generator> gens = new HashMap<>();
+        for(String keys: datas.keySet()){
+            ArrayList<String> values = datas.get(keys);
+
+        }
     }
 }
