@@ -1,5 +1,6 @@
 package org.ranG.genData.generators;
 
+import javax.imageio.metadata.IIOInvalidTreeException;
 import java.sql.Time;
 import java.util.HashMap;
 
@@ -39,17 +40,21 @@ public class Register {
         /* todo : english 这部分太麻烦了 ，暂时不做 */
         gMap.put("english",new Temporal(Temporal.dd,Temporal.SSS));
 
-        gMap.put("char",new Temporal(Temporal.dd,Temporal.SSS));
-        gMap.put("bool",new Temporal(Temporal.dd,Temporal.SSS));
-        gMap.put("boolean",new Temporal(Temporal.dd,Temporal.SSS));
-        gMap.put("tinyint",new Temporal(Temporal.dd,Temporal.SSS));
-        gMap.put("tinyint_unsigned",new Temporal(Temporal.dd,Temporal.SSS));
-        gMap.put("smallint",new Temporal(Temporal.dd,Temporal.SSS));
-        gMap.put("smallint_unsigned",new Temporal(Temporal.dd,Temporal.SSS));
-        gMap.put("int",new Temporal(Temporal.dd,Temporal.SSS));
-        gMap.put("int_unsigned",new Temporal(Temporal.dd,Temporal.SSS));
-        gMap.put("integer",new Temporal(Temporal.dd,Temporal.SSS));
-        gMap.put("decimal",new Temporal(Temporal.dd,Temporal.SSS));
+        gMap.put("char",new Char(10));
+        gMap.put("bool",new Int(0,1,""));
+        gMap.put("boolean",new Int(0,1,""));
+        gMap.put("tinyint",new Int(-128,127,""));
+        gMap.put("tinyint_unsigned",new Int(0,255,""));
+        gMap.put("smallint",new Int(-32768,32767,""));
+        gMap.put("smallint_unsigned",new Int(0,65535,""));
+        gMap.put("mediumint",new Int(-8388608,8388607,""));
+        gMap.put("mediumint_unsigned",new Int(0,16777215,""));
+        gMap.put("bigint",new BigInt(false));
+        gMap.put("bigint_unsigned",new BigInt(true));
+        gMap.put("int",new Int(0,-1,""));
+        gMap.put("int_unsigned",new Uint());
+        gMap.put("integer",new Int(0,-1,""));
+        gMap.put("decimal",new Decimal());
 
 
 
@@ -58,6 +63,9 @@ public class Register {
 
 
     public Generator get(String name){
-        return new TimeStamp();
+        Generator generator;
+        generator = gMap.get(name);
+        /* if gmap dosen't find the type ? */
+        return generator;
     }
 }

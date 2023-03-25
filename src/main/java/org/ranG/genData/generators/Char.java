@@ -24,7 +24,6 @@ public class Char implements Generator{
         for(int i=0;i<this.length;i++){
             byteArray[i]=b.get(i);
         }
-
         return  String.format("\"%s\"",new String(byteArray));
 
     }

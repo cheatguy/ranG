@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.ast.Str;
+import org.ranG.ComposeGen;
 import org.ranG.genData.generators.*;
 import org.ranG.genData.LuaParser;
 
@@ -63,12 +64,6 @@ public class Data {
         }
     }
 
-    public Generator composeFromGenName(String[] genNames){
-        ArrayList <String> gn = new ArrayList<>();
-//        for(String s:genNames){
-//
-//        }
-    }
     Data(String key,LuaValue l){
         LuaParser parser = new LuaParser();
         HashMap<String, ArrayList<String>> datas = parser.extractAllSlice("data",dataType);
@@ -76,6 +71,20 @@ public class Data {
         for(String keys: datas.keySet()){
             ArrayList<String> values = datas.get(keys);
 
+            gens.put(keys,)
+
         }
+    }
+
+    public Generator composeFromGenName(ArrayList<String>  genName){
+        ArrayList<Generator> gs = new ArrayList<>();
+        Register register = new Register();
+        for(String gName : genName){
+            Generator gor = register.get(gName);
+            /* todo 这里忽略了 类型不存在的情况 */
+            gs.add(gor);
+        }
+        ComposeGen cpg = new ComposeGen(gs);
+
     }
 }

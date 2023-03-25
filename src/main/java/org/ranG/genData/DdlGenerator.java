@@ -28,6 +28,7 @@ public class DdlGenerator {
 
         String zzStr ;
         if (zzPath.isEmpty()){
+            /* use relative path later */
             zzPath = "D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\default.zz.lua";
         }else{
             Path filePath = Path.of(zzPath);
@@ -36,7 +37,7 @@ public class DdlGenerator {
             Tables tb = new Tables("","tables",code);
             Fields fd = new Fields("","fields",code);
             Data data = new Data("",code);
-            System.out.println("test");
+
 
             /*iter the value */
 //                LuaValue k = LuaValue.NIL;
