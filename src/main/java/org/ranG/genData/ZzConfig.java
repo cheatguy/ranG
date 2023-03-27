@@ -1,14 +1,20 @@
 package org.ranG.genData;
 
 public class ZzConfig {
-    class Tables{
+    Tables tables;
+    Fields fields;
+    Data data;
+    public ZzConfig(Tables t,Fields f,Data d){
+        this.tables = t;
+        this.fields = f;
+        this.data   = d;
+    }
 
+    public ConfigRet byConfig(){
 
     }
-    class Fields{
 
-    }
-    class Data{
+    public genDdls(){
 
     }
 }

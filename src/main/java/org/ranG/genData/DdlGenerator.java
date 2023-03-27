@@ -38,6 +38,7 @@ public class DdlGenerator {
             Fields fd = new Fields("","fields",code);
             Data data = new Data("",code);
 
+            ZzConfig zzConfig = new ZzConfig(tb,fd,data);
 
             /*iter the value */
 //                LuaValue k = LuaValue.NIL;

@@ -64,7 +64,13 @@ public class Register {
 
     public Generator get(String name){
         Generator generator;
-        generator = gMap.get(name);
+        if(gMap.containsKey(name)){
+            generator = gMap.get(name);
+        }else{
+            /* 使用默认值 */
+            generator = new ConstGen();
+        }
+
         /* if gmap dosen't find the type ? */
         return generator;
     }

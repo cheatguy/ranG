@@ -14,6 +14,15 @@ public class Fields {
     ArrayList<Integer> pos;
     HashMap<String,ArrayList<String>> datas;
 
+    class FieldExec{
+        boolean canUnSign;
+        boolean unSign;
+        String name;
+        /* tp written by zz file*/
+        String tp;
+
+    }
+
     //这里的 default var，不知道为什么有keys，但是zz文件中不包含keys
     static VarWithDefault[] fieldVars ={
             new VarWithDefault("types",new String[]{
@@ -53,4 +62,8 @@ public class Fields {
             }
         }
     }
+    void traverse(){
+
+    }
+
 }
