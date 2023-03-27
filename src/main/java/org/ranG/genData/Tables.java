@@ -14,6 +14,19 @@ public class Tables  {
     ArrayList<Integer> pos;
     HashMap< String,ArrayList<String> > datas;
 
+    /*
+        property underneath is just for handler
+     */
+    static String tNamePrefix = "table";
+    ByteBuffer buf;
+    ArrayList<HashMap<String,String>> m;
+    ArrayList<Tables.TableStmt> stmts;
+
+    public void setGenProperty(){
+        buf = ByteBuffer.allocate(2048);
+        m = new ArrayList<>();
+        stmts = new ArrayList<>();
+    }
 
     void addFields(String fieldName,ArrayList<String> optionData) {
         /* call only add once */
@@ -40,7 +53,13 @@ public class Tables  {
     }
     static VarWithDefault[] tableVars ={new VarWithDefault("rows",new String[]{"0", "1", "2", "10", "100"}),new VarWithDefault("charsets",new String[]{"undef"}),new VarWithDefault("partitions",new String[]{"undef"})};
 
-    Tables(String template, String option, LuaValue lValue){
+    /* 无参数构造 */
+    public Tables(){
+        datas = new HashMap<>();
+        fields = new ArrayList<>();
+        pos = new ArrayList<>();
+    }
+    public Tables(String template, String option, LuaValue lValue){
         datas = new HashMap<>();
         fields = new ArrayList<>();
         pos = new ArrayList<>();
@@ -53,36 +72,37 @@ public class Tables  {
     }
 
     public ArrayList<TableStmt> gen(){
-
-        String tNamePrefix = "table";
-        ArrayList<TableStmt> stmts = new ArrayList<>();
-        ByteBuffer buf = ByteBuffer.allocate(2048);
-        ArrayList<HashMap<String,String>> m;
-        TableHandler hd = new TableHandler();
-        if(traverseEntry(hd) < 0){
+        setGenProperty();
+//        TableHandler hd = new TableHandler();
+        if(traverseEntry() < 0){
             return null;
         }else{
-            return stmts;
+            return this.stmts;
         }
     }
 
-    class TableHandler implements Handler{
-        @Override
-        public int anonFunc(ArrayList<String> cur, String tname, Buffer buf, ArrayList<HashMap<String,String>> m, Tables.TableStmt stmts){
-            buf.reset();
 
-            return 1;
-        }
-    }
     /* return value > 0 means ok | return vale < 0, error occurs  */
     int traverseEntry(){
         ArrayList<String> container  = new ArrayList<>();
-        return traverse(container,0,new TableHandler());
+        /* 子类需要父类的这个值 */
+        TableHandler hd = new TableHandler(this.fields);
+        /* 使用一个子类实现handler方法，传入，这个子类需要继承，这样才能用到父类的数据*/
+        return traverse(container,0,hd);
     }
     int traverse(ArrayList<String> container,int idx,Handler hd){
         if(idx == this.fields.size()){
             return hd.anonFunc(container);
         }
+        ArrayList<String> data = this.datas.get(this.fields.get(idx));
+        for(String d:data){
+            container.set(idx,d);
+            if(traverse(container,idx+1,hd) < 0){
+                return -1;
+            }
+        }
+        /* normal case ,return 1*/
+        return 1;
     }
 
 }
