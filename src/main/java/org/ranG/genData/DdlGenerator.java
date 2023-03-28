@@ -39,16 +39,7 @@ public class DdlGenerator {
             Data data = new Data("",code);
 
             ZzConfig zzConfig = new ZzConfig(tb,fd,data);
-
-            /*iter the value */
-//                LuaValue k = LuaValue.NIL;
-//                while(true){
-//                    Varargs n = vRow.next(k);
-//                    if ( (k = n.arg1()).isnil() )
-//                        break;
-//                    LuaValue v = n.arg(2);
-//                    System.out.println(v.toint());
-//                }
+            zzConfig.genDdls();
 
 
 

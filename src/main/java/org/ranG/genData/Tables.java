@@ -86,10 +86,10 @@ public class Tables  {
 
     public ArrayList<TableStmt> gen(){
         setGenProperty();
-//        TableHandler hd = new TableHandler();
         if(traverseEntry() < 0){
             return null;
         }else{
+            /* stmts 被作为参数，已经被add 了很多次了*/
             return this.stmts;
         }
     }
@@ -110,11 +110,11 @@ public class Tables  {
     int traverseEntry(){
         ArrayList<String> container  = new ArrayList<>();
         /* 子类需要父类的这个值 */
-        TableHandler hd = new TableHandler(this.fields);
+//        TableHandler hd = new TableHandler(this.fields);
         /* 使用一个子类实现handler方法，传入，这个子类需要继承，这样才能用到父类的数据*/
-        return traverse(container,0,hd);
+        return traverse(container,0);
     }
-    int traverse(ArrayList<String> container,int idx,Handler hd){
+    int traverse(ArrayList<String> container,int idx){
         if(idx == this.fields.size()){
             return hd.anonFunc(container,stmts);
         }
@@ -127,6 +127,9 @@ public class Tables  {
         }
         /* normal case ,return 1*/
         return 1;
+    }
+    int passInto(ArrayList<String> cur){
+
     }
 
 }
