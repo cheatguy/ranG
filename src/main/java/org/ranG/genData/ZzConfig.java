@@ -27,6 +27,7 @@ public class ZzConfig {
         if(tableStmts == null){
             log.error("getDdl : table gen() return error");
             return null;
+
         }
         FieldRet fieldRet = this.fields.gen();
         if(fieldRet == null){
