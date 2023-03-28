@@ -33,13 +33,17 @@ public class ZzConfig {
             log.error("getDdl : field get() return error");
             return null;
         }
+        for(Tables.TableStmt st:tableStmts){
+            st.wrapInTable(fieldRet.arr1);
+        }
         genDdlReturn ret = new genDdlReturn();
+        ret.arrTb = tableStmts;
+        ret.arrFld = fieldRet.arr2;
 
-        /*暂时fld 返回空，使用的是tablestmt */
-        ret.arrFld = new ArrayList<>();
-        ret.arrTb = ;
+        return ret;
 
-        /* 对进行实例化
+
+        /* 对进行实例化 */
 
 
     }

@@ -1,10 +1,12 @@
 package org.ranG.genData;
 
 
+import org.apache.logging.log4j.Logger;
 import org.luaj.vm2.LuaValue;
 import org.ranG.genData.generators.Generator;
 import org.stringtemplate.v4.ST;
 
+import java.awt.image.AreaAveragingScaleFilter;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -56,6 +58,9 @@ public class Tables  {
         int rowNum;
         /* generate by wrapInTable() */
         String ddl;
+        public void  wrapInTable(ArrayList<String> fieldStmts){
+
+        }
     }
     static VarWithDefault[] tableVars ={new VarWithDefault("rows",new String[]{"0", "1", "2", "10", "100"}),new VarWithDefault("charsets",new String[]{"undef"}),new VarWithDefault("partitions",new String[]{"undef"})};
 
@@ -116,12 +121,12 @@ public class Tables  {
     }
     int traverse(ArrayList<String> container,int idx){
         if(idx == this.fields.size()){
-            return hd.anonFunc(container,stmts);
+            return passInto(container);
         }
         ArrayList<String> data = this.datas.get(this.fields.get(idx));
         for(String d:data){
             container.set(idx,d);
-            if(traverse(container,idx+1,hd) < 0){
+            if(traverse(container,idx+1) < 0){
                 return -1;
             }
         }
@@ -129,7 +134,86 @@ public class Tables  {
         return 1;
     }
     int passInto(ArrayList<String> cur){
+        Logger log = LoggerUtil.getLogger();
+        this.buf.reset();
+        byte[] str = Tables.tNamePrefix.getBytes();
+        this.buf.put(str);
+        /* 这个stmt 不同于stmts */
+        TableStmt stmt = new TableStmt();
+        for(int i=0;i< cur.size();i++){
+            /*
+                field name  : fields[s]
+                field value : cur[s]
+             */
+            String field = this.fields.get(i);
+            String putTmp = "_"+ cur.get(i);
+            this.buf.put(putTmp.getBytes());
+            /* 根据 field 内容不同，执行不同代码块 */
+            String input = cur.get(i);
+            String target = ""; /* return value for switch */
+            boolean errorOccur = false;
+            switch (field){
+                case "rows":{
+                    try {
+                        int rows = Integer.parseInt(input);
+                        stmt.rowNum = rows;
+                    } catch ( NumberFormatException e){
+                        errorOccur = true;
+                        target = "";
+                        /* 这里日志打出来 */
+                        log.error("table handler:parse int error");
+                        break;
+                    }
+                    target = "";
+                    break;
+                }
+                case "charsets":{
+                    if(input.equals("undef")){
+                        target = "";
+                    }else{
+                        target = String.format("character set %s",input);
+                    }
+                    break;
+                }
+                case "partitions":{
+                    if(input.equals("undef")){
+                        target ="";
+                    }
+                    try{
+                        int num = Integer.parseInt(input);
+                        target = String.format("\npartition by hash(pk)\npartitions %d",num);
+                    }catch (NumberFormatException e){
+                        /*打日志
+                         */
+                        log.error("table handler : parse int error");
+                        errorOccur = true;
+                        target = "";
+                        break;
+                    }
+                    break;
+                }
+                default : {
+                    log.info("handler work successful");
+                }
+            }
+            /* m中的map 已经映射出很多 kv 了*/
+            if(errorOccur){
+                /* error occurs ,dont set map */
+                target = "";
+                return -1;
+                /* 整体退出 ，返回-1 */
+            }else{
+                this.m.put(field,target);
+            }
+        }
+        String tName = this.buf.toString();
+        stmt.name = tName;
+        this.m.put("tname",tName);
 
+        /* 根据table tmpl 进行 m这个map中的值替换 */
+        stmt.format = this.format(this.m);
+        this.stmts.add(stmt); /*对传入的父类的 stmts 进行修改 */
+        return 1;
     }
 
 }

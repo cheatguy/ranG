@@ -86,8 +86,12 @@ public class Fields  {
         setProperty();
         if(traverseEntry() <0 ){ /*会对stmts 进行修改*/
             log.error("field gen() error");
-            return null;
+            FieldRet ret = new FieldRet(this.stmts,this.fieldExecs);
+            ret.arr1 = null;/*第一个返回空 */
+            return ret;
         }else{
+
+            this.stmts.addAll(extraStmts);
             FieldRet ret = new FieldRet(this.stmts,this.fieldExecs);
             return ret;
         }
