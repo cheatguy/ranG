@@ -1,30 +1,36 @@
 package org.ranG.genData;
 
+
 import org.luaj.vm2.LuaValue;
 import org.ranG.genData.generators.Generator;
+import org.stringtemplate.v4.ST;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class Tables  {
     int number;
     ArrayList<String> fields;
     ArrayList<Integer> pos;
     HashMap< String,ArrayList<String> > datas;
+    String tableTmpl;  /* string 的模板 */
+    ST tmpl;
 
     /*
         property underneath is just for handler
      */
     static String tNamePrefix = "table";
     ByteBuffer buf;
-    ArrayList<HashMap<String,String>> m;
+    HashMap<String,String> m;
     ArrayList<Tables.TableStmt> stmts;
 
     public void setGenProperty(){
         buf = ByteBuffer.allocate(2048);
-        m = new ArrayList<>();
+        m = new HashMap<>();
         stmts = new ArrayList<>();
     }
 
@@ -58,17 +64,24 @@ public class Tables  {
         datas = new HashMap<>();
         fields = new ArrayList<>();
         pos = new ArrayList<>();
+        tmpl = new ST("create table <tname> (\n" + "`pk` int primary keys <keys>\n" + ") <charsets> <partition>" );
     }
     public Tables(String template, String option, LuaValue lValue){
         datas = new HashMap<>();
         fields = new ArrayList<>();
         pos = new ArrayList<>();
+        tmpl = new ST("create table <tname> (\n" + "`pk` int primary keys <keys>\n" + ") <charsets> <partition>" );
+
         /* tableVar : name String, default String[] */
         for(VarWithDefault var : tableVars){
             LuaParser parser = new LuaParser();
             ArrayList<String> vals = parser.extractSlice(lValue,option,var.name,var.defaultValue);
             this.addFields(var.name,vals);
         }
+
+        /* 进行 template 的初始化 */
+
+
     }
 
     public ArrayList<TableStmt> gen(){
@@ -81,8 +94,19 @@ public class Tables  {
         }
     }
 
+    public String format(HashMap<String,String> vals){
+        /* map 中所有kv 进行一个替换 */
+        Iterator<Map.Entry<String,String>> it = vals.entrySet().iterator();
+        while(it.hasNext()){
+            Map.Entry<String, String> entry = it.next();
+            tmpl.add(entry.getKey(),entry.getValue());
+        }
+        return tmpl.render();
+
+    }
 
     /* return value > 0 means ok | return vale < 0, error occurs  */
+    /* 需要对传入父类的stmts array 进行修改*/
     int traverseEntry(){
         ArrayList<String> container  = new ArrayList<>();
         /* 子类需要父类的这个值 */
@@ -92,7 +116,7 @@ public class Tables  {
     }
     int traverse(ArrayList<String> container,int idx,Handler hd){
         if(idx == this.fields.size()){
-            return hd.anonFunc(container);
+            return hd.anonFunc(container,stmts);
         }
         ArrayList<String> data = this.datas.get(this.fields.get(idx));
         for(String d:data){

@@ -7,5 +7,5 @@ import java.util.HashMap;
 /* this handler is for traverse */
 public interface Handler {
 //    public int anonFunc(ArrayList<String> cur);
-    public int anonFunc(ArrayList<String> cur);
+    public int anonFunc(ArrayList<String> cur,ArrayList<Tables.TableStmt> stmts);
 }
