@@ -58,8 +58,14 @@ public class Tables  {
         int rowNum;
         /* generate by wrapInTable() */
         String ddl;
-        public void  wrapInTable(ArrayList<String> fieldStmts){
 
+        /* 只对tableStmt 中的.dll进行修改 */
+        public void  wrapInTable(ArrayList<String> fieldStmts){
+            ByteBuffer buf = ByteBuffer.allocate(2048);
+            buf.put(",\n".getBytes());
+
+            buf.put(String.join(",\n",fieldStmts).getBytes());
+            this.ddl = String.format(this.format,buf.toString());
         }
     }
     static VarWithDefault[] tableVars ={new VarWithDefault("rows",new String[]{"0", "1", "2", "10", "100"}),new VarWithDefault("charsets",new String[]{"undef"}),new VarWithDefault("partitions",new String[]{"undef"})};

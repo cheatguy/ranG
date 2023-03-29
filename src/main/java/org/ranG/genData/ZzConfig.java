@@ -1,6 +1,7 @@
 package org.ranG.genData;
 
 import org.apache.logging.log4j.Logger;
+import org.ranG.ComposeGen;
 
 import java.util.ArrayList;
 
@@ -19,6 +20,18 @@ public class ZzConfig {
 
     public ConfigRet byConfig(){
         genDdlReturn tableStmts = genDdls();
+        Logger log = LoggerUtil.getLogger();
+        if(tableStmts == null){
+            log.error("byConfig : get tableStmt error");
+            return null;
+        }
+        ComposeGen recordGor = this.data.getRecordGen(tableStmts.arrFld);
+        ArrayList<String> sql = new ArrayList<>();
+        ArrayList<String> row = new ArrayList<>();
+        for(Tables.TableStmt tableStmtTmp:tableStmts.arrTb){
+
+        }
+
 
     }
 
@@ -36,6 +49,9 @@ public class ZzConfig {
             return null;
         }
         for(Tables.TableStmt st:tableStmts){
+            /*
+                只对tableStmts 中的每个 st元素中的 .ddl进行修改
+             */
             st.wrapInTable(fieldRet.arr1);
         }
         genDdlReturn ret = new genDdlReturn();

@@ -1,9 +1,11 @@
 package org.ranG.genData;
 
+import java.awt.image.AreaAveragingScaleFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import org.apache.logging.log4j.Logger;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.ast.Str;
 import org.ranG.ComposeGen;
@@ -93,6 +95,44 @@ public class Data {
         }
         ComposeGen cpg = new ComposeGen(gs);
         return cpg;
-
     }
+    public ComposeGen getRecordGen(ArrayList<Fields.FieldExec> field){
+        Logger log = LoggerUtil.getLogger();
+        ArrayList<Generator> gensTmp = new ArrayList<>();
+        for(Fields.FieldExec f:field){
+            String name = f.name;
+            /*判断内容是否存在 */
+            /* full type name */
+            if(this.gens.containsKey(name)){
+                gensTmp.add(this.gens.get(name));
+                continue;
+            }
+            /*simple type name */
+            int idx = name.indexOf('(');
+            if(idx != -1){
+                /* get the string before ( */
+                name = name.substring(0,idx);
+                if(this.gens.containsKey(name)){
+                    gensTmp.add(this.gens.get(name));
+                    continue;
+                }
+            }
+            /*fully summary name */
+            String summaryKey = "";
+            if(!summaryType.containsKey(name)){
+                summaryKey = "strings";
+            }
+            if (!this.gens.containsKey(summaryKey)) {
+                log.error("getrecoredgen : not find the corresponding type");
+            }
+            Generator generator = this.gens.get(summaryKey);
+            if(f.unSign){
+                gensTmp.add(new UnSignGen(generator,10,"1"));
+            }else{
+                gensTmp.add(generator);
+            }
+        }
+        return new ComposeGen(gensTmp);
+    }
+
 }
