@@ -19,7 +19,6 @@ public class Tables  {
     ArrayList<String> fields;
     ArrayList<Integer> pos;
     HashMap< String,ArrayList<String> > datas;
-    String tableTmpl;  /* string 的模板 */
     ST tmpl;
 
     /*
@@ -120,7 +119,6 @@ public class Tables  {
     int traverseEntry(){
         ArrayList<String> container  = new ArrayList<>();
         /* 子类需要父类的这个值 */
-//        TableHandler hd = new TableHandler(this.fields);
         /* 使用一个子类实现handler方法，传入，这个子类需要继承，这样才能用到父类的数据*/
         return traverse(container,0);
     }
@@ -131,7 +129,8 @@ public class Tables  {
         ArrayList<String> data = this.datas.get(this.fields.get(idx));
         for(String d:data){
             /* Error: 这里爆出数组越界，原因是java的arrayList中如果没有对象，就不会进行set值,应该使用add（） not set（） */
-            container.add(idx,d);
+            /* todo：这里要用set那种方法，但是set会引入错误 */
+            container.add(idx,d); /*这个add 有问题，如果当前位置存在，他就会把整体右移 */
 //            container.set(idx,d);
             if(traverse(container,idx+1) < 0){
                 return -1;

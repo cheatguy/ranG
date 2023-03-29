@@ -15,7 +15,7 @@ import org.ranG.genData.LuaParser;
 public class Data {
     static final String numberType = "numbers";
     static final String blobType ="blobs";
-    static final String temporalType = "temporas";
+    static final String temporalType = "temporals";
     static final String enumType = "enum";
     static final String stringType = "strings";
 

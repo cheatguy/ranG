@@ -9,7 +9,6 @@ public class ZzConfig {
     Tables tables;
     Fields fields;
     Data data;
-    private genDdlReturn ret;
 
     public ZzConfig(Tables t,Fields f,Data d){
         this.tables = t;
