@@ -8,4 +8,8 @@ import java.util.HashMap;
 public class ConfigRet {
     ArrayList<String> ddls;
     HashMap<String,DdlFunc> keyFunc;
+    public ConfigRet(ArrayList<String> ddls,HashMap<String,DdlFunc> keyFunc){
+        this.ddls = ddls;
+        this.keyFunc = keyFunc;
+    }
 }

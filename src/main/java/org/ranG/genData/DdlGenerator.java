@@ -22,8 +22,13 @@ public class DdlGenerator {
     /*
         read lua zz file
         exec zz file
+
+        genDdlReturn contains:
+            String[] : sql
+            keyfunc
      */
-    public List<String> getDdl() {
+
+    public ConfigRet getDdl() {
 
 
         String zzStr ;
@@ -32,35 +37,25 @@ public class DdlGenerator {
             zzPath = "D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\default.zz.lua";
         }else{
             Path filePath = Path.of(zzPath);
-
-            LuaValue code = globals.loadfile(zzPath).call();
-            Tables tb = new Tables("","tables",code);
-            Fields fd = new Fields("","fields",code);
-            Data data = new Data("",code);
-
-            ZzConfig zzConfig = new ZzConfig(tb,fd,data);
-            zzConfig.genDdls();
-
-
-
-
-
         }
+        LuaValue code = globals.loadfile(zzPath).call();
+        Tables tb = new Tables("tables",code);
+        Fields fd = new Fields("fields",code);
+        /*  看下data能不能读取数据*/
+        Data data = new Data("",code);
 
+        ZzConfig zzConfig = new ZzConfig(tb,fd,data);  /*这个是对构造 */
 
+        ConfigRet genRet = zzConfig.byConfig();
 
-
-
-
-
-        List<String> ddls = new ArrayList<>();
-        ddls.add("tr");
-        return  ddls;
+        return  genRet;
 
     }
     public void act(){
-        /*包含生成ddl语句 ， 连接DB ， 执行 ddl语句 */
-        List<String> dlls = getDdl();
+        /*包含生成ddl语句(只是第一步） ， 连接DB ， 执行 ddl语句 */
+        /* return : sql string[] ,keyFunc */
+        ConfigRet dlls = getDdl();
+
     }
 
 }

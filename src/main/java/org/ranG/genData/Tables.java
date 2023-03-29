@@ -26,12 +26,12 @@ public class Tables  {
         property underneath is just for handler
      */
     static String tNamePrefix = "table";
-    ByteBuffer buf;
+    StringBuilder buf;
     HashMap<String,String> m;
     ArrayList<Tables.TableStmt> stmts;
 
     public void setGenProperty(){
-        buf = ByteBuffer.allocate(2048);
+        this.buf = new StringBuilder();
         m = new HashMap<>();
         stmts = new ArrayList<>();
     }
@@ -61,10 +61,9 @@ public class Tables  {
 
         /* 只对tableStmt 中的.dll进行修改 */
         public void  wrapInTable(ArrayList<String> fieldStmts){
-            ByteBuffer buf = ByteBuffer.allocate(2048);
-            buf.put(",\n".getBytes());
-
-            buf.put(String.join(",\n",fieldStmts).getBytes());
+            StringBuilder buf = new StringBuilder();
+            buf.append(",\n".getBytes());
+            buf.append(String.join(",\n",fieldStmts).getBytes());
             this.ddl = String.format(this.format,buf.toString());
         }
     }
@@ -77,7 +76,7 @@ public class Tables  {
         pos = new ArrayList<>();
         tmpl = new ST("create table <tname> (\n" + "`pk` int primary keys <keys>\n" + ") <charsets> <partition>" );
     }
-    public Tables(String template, String option, LuaValue lValue){
+    public Tables(String option, LuaValue lValue){
         datas = new HashMap<>();
         fields = new ArrayList<>();
         pos = new ArrayList<>();
@@ -131,7 +130,9 @@ public class Tables  {
         }
         ArrayList<String> data = this.datas.get(this.fields.get(idx));
         for(String d:data){
-            container.set(idx,d);
+            /* Error: 这里爆出数组越界，原因是java的arrayList中如果没有对象，就不会进行set值,应该使用add（） not set（） */
+            container.add(idx,d);
+//            container.set(idx,d);
             if(traverse(container,idx+1) < 0){
                 return -1;
             }
@@ -141,9 +142,8 @@ public class Tables  {
     }
     int passInto(ArrayList<String> cur){
         Logger log = LoggerUtil.getLogger();
-        this.buf.reset();
-        byte[] str = Tables.tNamePrefix.getBytes();
-        this.buf.put(str);
+        this.buf.setLength(0); /* delete buf*/
+        this.buf.append(tNamePrefix);
         /* 这个stmt 不同于stmts */
         TableStmt stmt = new TableStmt();
         for(int i=0;i< cur.size();i++){
@@ -151,9 +151,10 @@ public class Tables  {
                 field name  : fields[s]
                 field value : cur[s]
              */
+            /* cur 会不断膨胀，但是 field 大小没变化 */
             String field = this.fields.get(i);
             String putTmp = "_"+ cur.get(i);
-            this.buf.put(putTmp.getBytes());
+            this.buf.append(putTmp.getBytes());
             /* 根据 field 内容不同，执行不同代码块 */
             String input = cur.get(i);
             String target = ""; /* return value for switch */

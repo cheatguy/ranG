@@ -19,6 +19,7 @@ public class ZzConfig {
     }
 
     public ConfigRet byConfig(){
+        /* 调用了genDdl（） 获取初始数据结构，在这一步对数据结构实例化为sql String */
         genDdlReturn tableStmts = genDdls();
         Logger log = LoggerUtil.getLogger();
         if(tableStmts == null){
@@ -29,8 +30,18 @@ public class ZzConfig {
         ArrayList<String> sql = new ArrayList<>();
         ArrayList<String> row = new ArrayList<>();
         for(Tables.TableStmt tableStmtTmp:tableStmts.arrTb){
-
+            sql.add(tableStmtTmp.ddl);
+            ArrayList<String> valuesStmt = new ArrayList<>();
+            for(int i =0;i<tableStmtTmp.rowNum;i++){
+                recordGor.oneRow(row);
+                valuesStmt.add(WrapTool.wrapInDml(Integer.toString(i),row));
+            }
+            sql.add(WrapTool.wrapInInsert(tableStmtTmp.name,valuesStmt));
         }
+
+        /* now ignore keyFunc */
+        ConfigRet  ret = new ConfigRet(sql,null);
+        return ret;
 
 
     }

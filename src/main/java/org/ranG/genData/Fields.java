@@ -67,7 +67,7 @@ public class Fields  {
                     "signed"
             })
     };
-    Fields(String template, String option, LuaValue lValue){
+    Fields( String option, LuaValue lValue){
         datas = new HashMap<>();
         fields = new ArrayList<>();
         pos = new ArrayList<>();
@@ -130,7 +130,7 @@ public class Fields  {
         }
         ArrayList<String> data = this.datas.get(this.fields.get(idx));
         for(String d:data){
-            container.set(idx,d);
+            container.add(idx,d);
             if(traverse(container,idx+1) < 0){
                 return -1;
             }
