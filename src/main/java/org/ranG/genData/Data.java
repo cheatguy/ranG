@@ -70,6 +70,7 @@ public class Data {
     Data(String key,LuaValue l){  /* parameter now is unused */
         LuaParser parser = new LuaParser();
         HashMap<String, ArrayList<String>> datas = parser.extractAllSlice("data",dataType);
+        /* 能读到Lua 中的脚本信息 */
         HashMap<String,Generator> gens = new HashMap<>();
         for(String keys: datas.keySet()){
             ArrayList<String> values = datas.get(keys);
@@ -77,7 +78,7 @@ public class Data {
         }
         /*分两次向 gens map中添加 k-v */
         for(VarWithDefault val :defaultData){
-            /* if not exist , use the default data */
+            /* if not exist , add the default data */
             if(!gens.containsKey(val.name)){
                 Generator dVal = composeFromGenName(new ArrayList<>(Arrays.asList(val.defaultValue)));
                 gens.put(val.name,dVal);

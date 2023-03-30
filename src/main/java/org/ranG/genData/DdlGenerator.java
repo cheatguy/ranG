@@ -41,7 +41,7 @@ public class DdlGenerator {
         LuaValue code = globals.loadfile(zzPath).call();
         Tables tb = new Tables("tables",code);
         Fields fd = new Fields("fields",code);
-        /*  看下data能不能读取数据*/
+        /* 能读到数据，并且除了lua脚本的，还有默认的数据 */
         Data data = new Data("",code);
 
         ZzConfig zzConfig = new ZzConfig(tb,fd,data);  /*这个是对构造 */

@@ -17,5 +17,5 @@ data = {
         '12.991', '1.009', '-9.183',
         'decimal',
     },
-    strings = {'null', 'letter', 'english'},
+    strings = {'null', 'letter', 'bigint'},
 }

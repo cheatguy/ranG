@@ -124,14 +124,20 @@ public class Tables  {
     }
     int traverse(ArrayList<String> container,int idx){
         if(idx == this.fields.size()){
+            /* 满的时候，container 会各自包含一个 field 的值 */
             return passInto(container);
         }
+        /* 取data 中的值，给对于的structure */
         ArrayList<String> data = this.datas.get(this.fields.get(idx));
         for(String d:data){
             /* Error: 这里爆出数组越界，原因是java的arrayList中如果没有对象，就不会进行set值,应该使用add（） not set（） */
-            /* todo：这里要用set那种方法，但是set会引入错误 */
-            container.add(idx,d); /*这个add 有问题，如果当前位置存在，他就会把整体右移 */
-//            container.set(idx,d);
+            /* todo：这里要用set那种方法，但是set会引入错误,对数组边界进行判断 */
+            if(idx < container.size()){
+                container.set(idx,d);
+            }else{
+                container.add(idx,d); /*这个add 有问题，如果当前位置存在，他就会把整体右移 */
+            }
+
             if(traverse(container,idx+1) < 0){
                 return -1;
             }
@@ -153,7 +159,7 @@ public class Tables  {
             /* cur 会不断膨胀，但是 field 大小没变化 */
             String field = this.fields.get(i);
             String putTmp = "_"+ cur.get(i);
-            this.buf.append(putTmp.getBytes());
+            this.buf.append(putTmp);
             /* 根据 field 内容不同，执行不同代码块 */
             String input = cur.get(i);
             String target = ""; /* return value for switch */
@@ -184,6 +190,10 @@ public class Tables  {
                 case "partitions":{
                     if(input.equals("undef")){
                         target ="";
+                        break;
+                        /*
+                            bug： 这里忘记break，导致parse 到 “under”
+                         */
                     }
                     try{
                         int num = Integer.parseInt(input);

@@ -130,7 +130,13 @@ public class Fields  {
         }
         ArrayList<String> data = this.datas.get(this.fields.get(idx));
         for(String d:data){
-            container.add(idx,d);
+
+            if(idx < container.size()){
+                container.set(idx,d);
+            }else{
+                container.add(idx,d); /*这个add 有问题，如果当前位置存在，他就会把整体右移 */
+            }
+
             if(traverse(container,idx+1) < 0){
                 return -1;
             }
