@@ -5,26 +5,21 @@ import java.util.Random;
 
 public class Char implements Generator{
     int length;
-    byte[] randChars;
-
+    StringBuilder sb;
+    static String s = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     public Char(int length){
-        String s = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        this.randChars = s.getBytes();
+
+        this.sb = new StringBuilder();
         this.length = length;
     }
     @Override
     public String gen() {
-        ArrayList<Byte> b = new ArrayList<>();
         Random random = new Random();
         for(int i=0;i<this.length;i++){
-            b.add(this.randChars[random.nextInt(randChars.length)]);
+            sb.append(s.substring(random.nextInt(s.length()),random.nextInt(s.length())+1));
         }
 
-        byte[] byteArray = new byte[this.length];
-        for(int i=0;i<this.length;i++){
-            byteArray[i]=b.get(i);
-        }
-        return  String.format("\"%s\"",new String(byteArray));
+        return  String.format("\"%s\"",sb.toString());
 
     }
 }

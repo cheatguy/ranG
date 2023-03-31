@@ -68,7 +68,7 @@ public class Register {
             generator = gMap.get(name);
         }else{
             /* 使用默认值 */
-            generator = new ConstGen("name");
+            generator = new ConstGen(name);
         }
 
         /* if gmap dosen't find the type ? */
