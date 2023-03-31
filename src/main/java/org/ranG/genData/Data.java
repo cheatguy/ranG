@@ -58,14 +58,7 @@ public class Data {
                     "letter", "letter", "letter", "letter", "null"
             })
     };
-    class constGen implements Generator{
-        String constant;
 
-        @Override
-        public String gen() {
-            return this.constant;
-        }
-    }
 
     Data(String key,LuaValue l){  /* parameter now is unused */
         LuaParser parser = new LuaParser();
@@ -91,6 +84,7 @@ public class Data {
         ArrayList<Generator> gs = new ArrayList<>();
         Register register = new Register();
         for(String gName : genName){
+            /* 内部进行封装好了，如果不存在，使用constGen（“name”） */
             Generator gor = register.get(gName);
             gs.add(gor);
         }
@@ -101,10 +95,11 @@ public class Data {
         Logger log = LoggerUtil.getLogger();
         ArrayList<Generator> gensTmp = new ArrayList<>();
         for(Fields.FieldExec f:field){
-            String name = f.name;
+            String name = f.tp;
             /*判断内容是否存在 */
             /* full type name */
             if(this.gens.containsKey(name)){
+                /* 在data 中是存在这个映射的  */
                 gensTmp.add(this.gens.get(name));
                 continue;
             }
@@ -122,9 +117,11 @@ public class Data {
             String summaryKey = "";
             if(!summaryType.containsKey(name)){
                 summaryKey = "strings";
+            }else{
+                summaryKey = summaryType.get(name);
             }
             if (!this.gens.containsKey(summaryKey)) {
-                log.error("getrecoredgen : not find the corresponding type");
+                log.error("get recordGen : not find the corresponding type");
             }
             Generator generator = this.gens.get(summaryKey);
             if(f.unSign){

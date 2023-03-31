@@ -19,15 +19,24 @@ public class ZzConfig {
 
     public ConfigRet byConfig(){
         /* 调用了genDdl（） 获取初始数据结构，在这一步对数据结构实例化为sql String */
+        /* 这里面的field 的name 获取出现问题 */
         genDdlReturn tableStmts = genDdls();
         Logger log = LoggerUtil.getLogger();
         if(tableStmts == null){
             log.error("byConfig : get tableStmt error");
             return null;
         }
+        /*这里要插入的数据有问题 */
         ComposeGen recordGor = this.data.getRecordGen(tableStmts.arrFld);
         ArrayList<String> sql = new ArrayList<>();
+        /*
+            row 一开始是有size的，但是没有具体数据，我们需要插入空穿来填充大小
+            row 的size 会作为后面的比较条件
+        *  */
         ArrayList<String> row = new ArrayList<>();
+        for(int i=0;i<tableStmts.arrFld.size();i++){
+            row.add(""); /* add null string */
+        }
         for(Tables.TableStmt tableStmtTmp:tableStmts.arrTb){
             sql.add(tableStmtTmp.ddl);
             ArrayList<String> valuesStmt = new ArrayList<>();
@@ -48,6 +57,7 @@ public class ZzConfig {
     public genDdlReturn genDdls(){
         Logger log = LoggerUtil.getLogger();
         ArrayList<Tables.TableStmt> tableStmts = this.tables.gen();
+        /* 这里的format 和ddl要区分开来 ？ */
         if(tableStmts == null){
             log.error("getDdl : table gen() return error");
             return null;

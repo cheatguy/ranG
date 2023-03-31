@@ -15,6 +15,7 @@ public class ComposeGen implements Generator {
 
     @Override
     public String gen() {
+        /* random select  one */
         Random rand = new Random();
         return this.gs.get(rand.nextInt(this.gs.size())).gen();
     }
@@ -24,6 +25,7 @@ public class ComposeGen implements Generator {
             log.error("one row : record gen illegal");
         }
         for(int i =0;i<this.gs.size();i++){
+            /* this would get many "name" */
             row.set(i,this.gs.get(i).gen());
         }
     }

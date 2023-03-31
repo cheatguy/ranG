@@ -113,11 +113,12 @@ public class Fields  {
     }
     public String format(HashMap<String,String> vals){
         Iterator<Map.Entry<String,String>> it = vals.entrySet().iterator();
+        ST tmp = new ST("`<fname>` <types> <sign> <keys>");
         while(it.hasNext()){
             Map.Entry<String, String> entry = it.next();
-            tmpl.add(entry.getKey(),entry.getValue());
+            tmp.add(entry.getKey(),entry.getValue());
         }
-        return tmpl.render();
+        return tmp.render();
     }
     int traverseEntry(){
         ArrayList<String> container  = new ArrayList<>();
@@ -147,7 +148,7 @@ public class Fields  {
     int passInto(ArrayList<String> cur){
         Logger log = LoggerUtil.getLogger();
         FieldExec fExec = new FieldExec();
-        String fName = this.fNamePrefix + String.join("_",cur);
+        String fName = this.fNamePrefix + "_" + String.join("_",cur);
         int extraNum = 0;
         for(int i=0;i<cur.size();i++){
             String field = this.fields.get(i);
@@ -169,7 +170,7 @@ public class Fields  {
                         tp = cur.get(i);
                     }else{
                         /* 获取 （前的内容 */
-                        tp = cur.get(i).substring(0,idx-1);
+                        tp = cur.get(i).substring(0,idx); /* start(include) end (exclude) */
                     }
                     tp = tp.toLowerCase();
                     if(canUnSign.containsKey(tp)){

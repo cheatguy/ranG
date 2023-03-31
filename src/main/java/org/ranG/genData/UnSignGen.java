@@ -13,8 +13,10 @@ public class UnSignGen implements Generator {
     }
     @Override
     public String gen() {
+        /* todo ：这里存在问题 */
         for (int i=0 ;i<this.retryNum ;i++){
             String cur = this.generator.gen();
+            /* string maybe null not a “” */
             if(!cur.startsWith("-")){
                 return cur;
             }

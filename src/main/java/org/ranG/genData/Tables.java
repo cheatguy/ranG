@@ -19,7 +19,7 @@ public class Tables  {
     ArrayList<String> fields;
     ArrayList<Integer> pos;
     HashMap< String,ArrayList<String> > datas;
-    ST tmpl;
+    ST tmpl;  /*这个ST没有用，用到的是format里面每次用新的ST */
 
     /*
         property underneath is just for handler
@@ -60,10 +60,10 @@ public class Tables  {
 
         /* 只对tableStmt 中的.dll进行修改 */
         public void  wrapInTable(ArrayList<String> fieldStmts){
-            StringBuilder buf = new StringBuilder();
-            buf.append(",\n".getBytes());
-            buf.append(String.join(",\n",fieldStmts).getBytes());
-            this.ddl = String.format(this.format,buf.toString());
+            StringBuilder bufT = new StringBuilder();
+            bufT.append(",\n");
+            bufT.append(String.join(",\n",fieldStmts));
+            this.ddl = String.format(this.format,bufT.toString());
         }
     }
     static VarWithDefault[] tableVars ={new VarWithDefault("rows",new String[]{"0", "1", "2", "10", "100"}),new VarWithDefault("charsets",new String[]{"undef"}),new VarWithDefault("partitions",new String[]{"undef"})};
@@ -73,13 +73,14 @@ public class Tables  {
         datas = new HashMap<>();
         fields = new ArrayList<>();
         pos = new ArrayList<>();
-        tmpl = new ST("create table <tname> (\n" + "`pk` int primary keys <keys>\n" + ") <charsets> <partition>" );
+
+        tmpl = new ST("create table <tname> (\n" + "`pk` int primary key <keys>%s\n" + ") <charsets> <partitions>" );
     }
     public Tables(String option, LuaValue lValue){
         datas = new HashMap<>();
         fields = new ArrayList<>();
         pos = new ArrayList<>();
-        tmpl = new ST("create table <tname> (\n" + "`pk` int primary keys <keys>\n" + ") <charsets> <partition>" );
+        tmpl = new ST("create table <tname> (\n" + "`pk` int primary key <keys>%s\n" + ") <charsets> <partitions>" );
 
         /* tableVar : name String, default String[] */
         for(VarWithDefault var : tableVars){
@@ -106,11 +107,13 @@ public class Tables  {
     public String format(HashMap<String,String> vals){
         /* map 中所有kv 进行一个替换 */
         Iterator<Map.Entry<String,String>> it = vals.entrySet().iterator();
+        /*每次要空 */
+        ST tmp = new ST("create table <tname> (\n" + "`pk` int primary key <keys>%s\n" + ") <charsets> <partitions>");
         while(it.hasNext()){
             Map.Entry<String, String> entry = it.next();
-            tmpl.add(entry.getKey(),entry.getValue());
+            tmp.add(entry.getKey(),entry.getValue());
         }
-        return tmpl.render();
+        return tmp.render();
 
     }
 

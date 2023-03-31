@@ -6,11 +6,11 @@ import java.util.ArrayList;
 public class WrapTool {
     static String wrapInDml(String pk, ArrayList<String> data){
         StringBuilder buf = new StringBuilder();
-        buf.append(("(" + pk).getBytes());
+        buf.append(("(" + pk));
         for(String s:data){
-            buf.append((","+s).getBytes());
+            buf.append((","+s));
         }
-        buf.append((")").getBytes());
+        buf.append((")"));
         return buf.toString();
 
     }
