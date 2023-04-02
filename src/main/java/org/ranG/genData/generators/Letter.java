@@ -6,6 +6,6 @@ public class Letter implements Generator{
     public String gen() {
         Random random = new Random();
         char randomChar = (char) (random.nextInt(26) + 'a');
-        return new String(Character.toString(randomChar));
+        return String.format("\"%c\"", randomChar);
     }
 }
