@@ -59,14 +59,22 @@ public class DdlGenerator {
         Logger log = LoggerUtil.getLogger();
         ConfigRet dlls = getDdl();
         try{
+//            Class.forName("com.mysql.jdbc.Driver");
             Connection conn = DriverManager.getConnection(this.dsn, "root", "jk123j@!?2<d");
             log.info("connect to sql success");
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from table_10_utf8_4;");
-            System.out.println("the size is " +rs.getFetchSize());
-            System.out.println("null");
+            for(String sql:dlls.ddls){
+                stmt.executeUpdate(sql);
+            }
+
+            /* for query */
+//            ResultSet rs = stmt.executeQuery("SELECT * from table_90_utf8_undef");
+//            while(rs.next()){
+//                System.out.println("the varchar "+rs.getArray("col_enum_undef_signed"));
+//            }
+
         }catch (SQLException e) {
-            log.error("fail to connect to sql");
+            log.error("sql exception");
             throw new RuntimeException(e);
         }
 

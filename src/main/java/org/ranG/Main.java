@@ -26,14 +26,16 @@ public class Main {
             log.info("after the command line parsing");
             BasicParser parser = new BasicParser();
             CommandLine cl = parser.parse(options, args);
+            /* create table and insert the data */
             if (cl.hasOption("genData")){
+                // -genData jdbc:mysql://localhost:3306/cpy
                 String dsns = cl.getOptionValue("genData");
                 DdlGenerator generator = new DdlGenerator();
                 generator.setDsn(dsns);
-
                 generator.act();
 
             }else if (cl.hasOption("genSql")){
+                // -genSql jdbc:mysql://localhost:3306/cpy
 
             }else {
                 System.out.println("not found");
@@ -44,3 +46,5 @@ public class Main {
 
     }
 }
+
+/* todo : 多数据库支持，GUI，差分测试 */
