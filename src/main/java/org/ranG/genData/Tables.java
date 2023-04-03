@@ -50,7 +50,7 @@ public class Tables  {
         }
     }
     /* inner class */
-    class TableStmt{
+    public class TableStmt{
         /*creat statement without field part */
         String format;
         String name;

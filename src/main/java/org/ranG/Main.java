@@ -20,7 +20,7 @@ public class Main {
 
             Option genData = new Option("g1","genData",true,"generate table and data");
 
-            Option genTable = new Option("g2","genSql",false,"generate sql statement based on table structure");
+            Option genTable = new Option("g2","genSql",true,"generate sql statement based on table structure");
             options.addOption(genData);
             options.addOption(genTable);
             log.info("after the command line parsing");
@@ -36,7 +36,9 @@ public class Main {
 
             }else if (cl.hasOption("genSql")){
                 // -genSql jdbc:mysql://localhost:3306/cpy
-
+                String dsn = cl.getOptionValue("genSql");
+                SqlGenerator generator = new SqlGenerator(dsn);
+                generator.act();
             }else {
                 System.out.println("not found");
             }
