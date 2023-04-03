@@ -1,7 +1,6 @@
 package org.ranG.genData;
 
 import org.apache.logging.log4j.Logger;
-import org.ranG.ComposeGen;
 
 import java.util.ArrayList;
 

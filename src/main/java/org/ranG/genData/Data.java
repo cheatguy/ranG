@@ -1,16 +1,12 @@
 package org.ranG.genData;
 
-import java.awt.image.AreaAveragingScaleFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
 import org.apache.logging.log4j.Logger;
 import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.ast.Str;
-import org.ranG.ComposeGen;
 import org.ranG.genData.generators.*;
-import org.ranG.genData.LuaParser;
 
 public class Data {
     static final String numberType = "numbers";

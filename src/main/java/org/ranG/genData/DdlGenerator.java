@@ -1,10 +1,12 @@
 package org.ranG.genData;
 
+import org.apache.logging.log4j.Logger;
 import org.luaj.vm2.*;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,7 +56,19 @@ public class DdlGenerator {
     public void act(){
         /*包含生成ddl语句(只是第一步） ， 连接DB ， 执行 ddl语句 */
         /* return : sql string[] ,keyFunc */
+        Logger log = LoggerUtil.getLogger();
         ConfigRet dlls = getDdl();
+        try{
+            Connection conn = DriverManager.getConnection(this.dsn, "root", "jk123j@!?2<d");
+            log.info("connect to sql success");
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from table_10_utf8_4;");
+            System.out.println("the size is " +rs.getFetchSize());
+            System.out.println("null");
+        }catch (SQLException e) {
+            log.error("fail to connect to sql");
+            throw new RuntimeException(e);
+        }
 
     }
 

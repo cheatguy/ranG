@@ -1,4 +1,4 @@
-package org.ranG;
+package org.ranG.genData;
 
 import org.apache.logging.log4j.Logger;
 import org.ranG.genData.LoggerUtil;
