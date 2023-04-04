@@ -4,10 +4,25 @@ import java.util.ArrayList;
 
 /* token seqence of branch */
 public class Seq {
-    ArrayList<Token> Items;
+    ArrayList<Token> items;
     int pNumber;
-    int SNumber;
+    int sNumber;
     public Seq(ArrayList<Token> items){
-
+        this.items = items;
+    }
+    public String getString(){
+        StringBuilder sb = new StringBuilder();
+        for(int i=0;i<this.items.size();i++){
+            Token tkn = this.items.get(i);
+            if(i==0){
+                sb.append(tkn.originString());
+                continue;
+            }
+            if (tkn.hasPreSpace()){
+                sb.append(" ");
+            }
+            sb.append(tkn.originString());
+        }
+        return sb.toString();
     }
 }

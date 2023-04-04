@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.HashMap;
 
-import static org.ranG.Main.yyPath;
+import static org.ranG.Main.*;
 
 public class SqlGenerator {
     String dsn;
@@ -84,15 +84,16 @@ public class SqlGenerator {
 
     }
 
-    public SQLVisitor getIter(){
+    public SQLVisitor getIter(KeyFun keyf){
         String yy = loadYy();
         Grammar grammar = new Grammar();
-        grammar.newIterWithRander();
+        grammar.newIterWithRander(yy,root,maxRecursive,keyf,debug);
 
 
     }
     public ArrayList<String> getRandSqls(KeyFun keyf){
         ArrayList<String> randomSqls = new ArrayList<>();
+        SQLVisitor sqlIter = getIter(keyf);
 
     }
 

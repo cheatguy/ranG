@@ -3,6 +3,10 @@ package org.ranG.grammar.YaccParser;
 public class RuneSeq {
     char[] rune;
     int pos;
+    public RuneSeq(char[] rune,int pos){
+        this.rune = rune;
+        this.pos  = pos;
+    }
     public char readRune(){
         if(this.pos>= this.rune.length){
             return 0;

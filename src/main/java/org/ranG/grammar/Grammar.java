@@ -2,7 +2,9 @@ package org.ranG.grammar;
 
 import org.ranG.genData.KeyFun;
 import org.ranG.grammar.SqlGenerator.SQLRandomlyIterator;
+import org.ranG.grammar.YaccParser.ParseRet;
 import org.ranG.grammar.YaccParser.RuneSeq;
+import org.ranG.grammar.YaccParser.Parser;
 
 import java.util.HashMap;
 
@@ -21,14 +23,14 @@ public class Grammar {
     final int inKeyWord = 11;
     final int inNonTerminal = 12;
     final int inTerminal = 13;
-    static HashMap<Character,Integer> stateMap = new HashMap<>(){{
+    public static HashMap<Character,Integer> stateMap = new HashMap<>(){{
         stateMap.put('\'',1);
         stateMap.put('"',2);
         stateMap.put('#',3);
         stateMap.put('{',5);
         stateMap.put('_',11);
     }};
-    static HashMap<Character,Boolean> specialRune = new HashMap<>(){{
+    public static HashMap<Character,Boolean> specialRune = new HashMap<>(){{
         specialRune.put(',',true);
         specialRune.put(';',true);
         specialRune.put('(',true);
@@ -50,11 +52,15 @@ public class Grammar {
         return inTerminal;
     }
     public SQLRandomlyIterator newIterWithRander(String yy, String root, int maxRecursive, KeyFun keyf,boolean debug){
+        parse(yy);
 
     }
 
     /* many return type*/
-    public parse(String yy){
+    public ParseRet parse(String yy){
+        RuneSeq reader = new RuneSeq(yy.toCharArray(),0);
+        Parser parser = new Parser();
+        ParseRet ret = parser.parseInside(IToken);
 
     }
 

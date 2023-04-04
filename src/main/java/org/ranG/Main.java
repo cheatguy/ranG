@@ -12,6 +12,8 @@ public class Main {
     public static  int queryNum = 100;
     public static String yyPath ="D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\examples\\functions.yy";
     public static boolean debug = false;
+    public static String root = "query";  /* root bnf expression to generate sql */
+    public static  int maxRecursive = 5;
     public static void main(String[] args) {
 
             Logger log = LoggerUtil.getLogger();
