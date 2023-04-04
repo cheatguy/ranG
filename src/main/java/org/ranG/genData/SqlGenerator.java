@@ -1,6 +1,7 @@
 package org.ranG.genData;
 
 import org.apache.logging.log4j.Logger;
+import org.ranG.grammar.Grammar;
 import org.ranG.grammar.SqlGenerator.SQLVisitor;
 
 import java.io.IOException;
@@ -85,6 +86,8 @@ public class SqlGenerator {
 
     public SQLVisitor getIter(){
         String yy = loadYy();
+        Grammar grammar = new Grammar();
+        grammar.newIterWithRander();
 
 
     }
