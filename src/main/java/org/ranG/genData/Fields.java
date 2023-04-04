@@ -41,6 +41,14 @@ public class Fields  {
         String name;
         /* tp written by zz file*/
         String tp;
+        public String getType(){
+            int idx = this.tp.indexOf("(");
+            if(idx == -1){
+                return this.tp;
+            }else{
+                return this.tp.substring(0,idx); //返回 （ 前的内容，like decimal（40，20）
+            }
+        }
     }
 
     static String fNamePrefix ="col";
