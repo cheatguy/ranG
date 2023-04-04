@@ -9,7 +9,9 @@ import org.apache.logging.log4j.Logger;
 public class Main {
     public static String zzPath = "D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\default.zz.lua";
 //    public static String zzPath = "D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\test.lua";
-
+    public static  int queryNum = 100;
+    public static String yyPath ="D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\examples\\functions.yy";
+    public static boolean debug = false;
     public static void main(String[] args) {
 
             Logger log = LoggerUtil.getLogger();
@@ -37,7 +39,7 @@ public class Main {
             }else if (cl.hasOption("genSql")){
                 // -genSql jdbc:mysql://localhost:3306/cpy
                 String dsn = cl.getOptionValue("genSql");
-                SqlGenerator generator = new SqlGenerator(dsn);
+                SqlGenerator generator = new SqlGenerator(dsn,);
                 generator.act();
             }else {
                 System.out.println("not found");

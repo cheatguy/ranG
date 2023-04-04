@@ -1,5 +1,7 @@
 package org.ranG.genData;
 import org.apache.logging.log4j.Logger;
+import org.ranG.genData.generators.Generator;
+import org.ranG.genData.generators.Register;
 
 import java.util.*;
 import java.util.function.Function;
@@ -73,6 +75,18 @@ public class KeyFun {
         this.funcMap.put("_field_char",f6);
         this.funcMap.put("_field_char_list",f7);
         this.funcMap.put("_field_list",f8);
+
+
+        //这部分其实是把gmap中的对象注册到funcMap中,使用到了匿名函数 */
+        for (Map.Entry<String, Generator> entry : Register.gMap.entrySet()) {
+            this.funcMap.put(entry.getKey(), new IFunc() {
+                @Override
+                public String func() {
+                   return entry.getValue().gen();
+                }
+            });
+        }
+
     }
 
     public class TableFunc implements IFunc{
@@ -127,7 +141,7 @@ public class KeyFun {
                 return "";
             }else{
                 Random rand = new Random();
-                return("`"+fieldInt.get(rand.nextInt(fields.size())).name+"`");
+                return("`"+fieldInt.get(rand.nextInt(fieldInt.size())).name+"`");
             }
         }
     }
@@ -155,7 +169,7 @@ public class KeyFun {
                 return "";
             }else {
                 Random rand = new Random();
-                return("`"+fieldChar.get(rand.nextInt(fields.size())).name+"`");
+                return("`"+fieldChar.get(rand.nextInt(fieldChar.size())).name+"`");
             }
         }
     }

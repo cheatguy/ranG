@@ -5,7 +5,7 @@ import java.sql.Time;
 import java.util.HashMap;
 
 public class Register {
-    static HashMap<String,Generator> gMap = new HashMap<>();
+    public static HashMap<String,Generator> gMap = new HashMap<>();
 
     public Register(){
         gMap.put("digit", new Digit());
@@ -73,5 +73,8 @@ public class Register {
 
         /* if gmap dosen't find the type ? */
         return generator;
+    }
+    public void Traverse(){
+
     }
 }

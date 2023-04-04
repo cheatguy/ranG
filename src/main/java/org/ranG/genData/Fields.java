@@ -7,6 +7,7 @@ import org.stringtemplate.v4.ST;
 
 import java.awt.event.FocusEvent;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -75,6 +76,13 @@ public class Fields  {
                     "signed"
             })
     };
+
+    Fields(){
+        datas = new HashMap<>();
+        fields = new ArrayList<>();
+        pos = new ArrayList<>();
+        tmpl = new ST("`<fname>` <types> <sign> <keys>");
+    }
     Fields( String option, LuaValue lValue){
         datas = new HashMap<>();
         fields = new ArrayList<>();

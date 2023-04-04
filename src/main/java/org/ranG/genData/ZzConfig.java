@@ -46,8 +46,8 @@ public class ZzConfig {
             sql.add(WrapTool.wrapInInsert(tableStmtTmp.name,valuesStmt));
         }
 
-        /* now ignore keyFunc */
-        ConfigRet  ret = new ConfigRet(sql,null);
+
+        ConfigRet  ret = new ConfigRet(sql,new KeyFun(tableStmts.arrTb,tableStmts.arrFld));
         return ret;
 
 
