@@ -1,6 +1,7 @@
 package org.ranG.grammar.YaccParser;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.rewrite.MapRewritePolicy;
 import org.ranG.genData.LoggerUtil;
 
 import java.util.ArrayList;
@@ -20,11 +21,11 @@ public class Parser {
     /*区别于外部的parse */
     public ParseRet parseInside(IToken tk){
         Token tkn;
-        ArrayList<Production> prods;
+        ArrayList<Production> prods = new ArrayList<>();
         Production p;
         /* production serial number */
         int pNumber = 0;
-        Token lastTerm;
+        Token lastTerm = null;
         int state = initState;
         CodeBlockRet ret = collectHeadCodeBlocks(tk);
         if(ret == null){
@@ -51,19 +52,95 @@ public class Parser {
                         log.error("parseInside:expect :");
                         return null;
                     }
+                    state = delimFetchedState;
                     break;
                 }
                 case delimFetchedState : {
+                    if(isEOF(tkn)){
+                        s.items.add(new Terminal("",null));
+                        p.AppendSeq(s);
+                        prods.add(p);
+                        state = endState;
+                        continue;
+                    }
+
+                    if(tkn.originString().equals("|") || isEOF(tkn)){
+                        s.items.add(new Terminal("",null));
+                        p.AppendSeq(s);
+                        s = new Seq(null);
+                    }else if(tkn.originString().equals(":")){
+                        continue;
+                    }else{
+                        state = termFetchedState;
+                        s.items.add(tkn);
+                    }
                     break;
                 }
+                /* state after first term fetched */
                 case termFetchedState : {
+                    if(tkn instanceof Eof){
+                        p.AppendSeq(s);
+                        prods.add(p);
+                        state = endState;
+                    }else if(tkn instanceof Operator){
+                        if(tkn.originString().equals("|")){
+                            p.AppendSeq(s);
+                            s = new Seq(null);
+                        }
+                        if(tkn.originString().equals(":")){
+                            /* not sure, may be buged */
+                            Terminal t = new Terminal("",null);
+                            s = new Seq(new ArrayList<>());
+                            s.items.add(t);
+                            p.AppendSeq(s);
+                            prods.add(p);
+                            p = new Production(s.items.get(0),pNumber);
+                            pNumber++;
+                            s = new Seq(null);
+                        }
+                        state = delimFetchedState;
+                    }else if(tkn instanceof NonTerminal || tkn instanceof KeyWord || tkn instanceof Terminal || tkn instanceof CodeBlock){
+
+                        lastTerm = tkn;
+                        state = prepareNextProdState;
+                    }
                     break;
                 }
                 case prepareNextProdState:{
+                    if(tkn instanceof Eof){
+                        s.items.add(lastTerm);
+                        p.AppendSeq(s);;
+                        prods.add(p);
+                        state = endState;
+                    }else if(tkn instanceof Operator){
+                        if(((Operator) tkn).val.equals("|")){
+                            s.items.add(lastTerm);
+                            p.AppendSeq(s);
+                            s = new Seq(null);
+                        }else if(((Operator) tkn).val.equals(":")){
+                            p.AppendSeq(s);
+                            s = new Seq(null);
+                            prods.add(p);
+                            if(! isTknNonTerminal(lastTerm)){
+                                log.error("parseInside: the char is not a nonterminal");
+                                return null;
+                            }
+                            p = new Production(lastTerm,pNumber);
+                            pNumber ++;
+                        }
+                        state = delimFetchedState;
+                    }else if(tkn instanceof NonTerminal || tkn instanceof KeyWord || tkn instanceof Terminal || tkn instanceof CodeBlock){
+                        /* potential problem */
+                        s.items.add(lastTerm);
+                        lastTerm = tkn;
+                    }
                     break;
+
                 }
             }
         }
+        ParseRet returnV = new ParseRet(ret.cbs,prods,null);
+        return returnV;
 
     }
     public Token skipComment(IToken tk){
