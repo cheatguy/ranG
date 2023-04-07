@@ -57,7 +57,7 @@ public class Parser {
                 }
                 case delimFetchedState : {
                     if(isEOF(tkn)){
-                        s.items.add(new Terminal("",null));
+                        s.items.add(new Terminal(null,""));
                         p.AppendSeq(s);
                         prods.add(p);
                         state = endState;
@@ -65,7 +65,7 @@ public class Parser {
                     }
 
                     if(tkn.originString().equals("|") || isEOF(tkn)){
-                        s.items.add(new Terminal("",null));
+                        s.items.add(new Terminal(null,""));
                         p.AppendSeq(s);
                         s = new Seq(null);
                     }else if(tkn.originString().equals(":")){
@@ -89,7 +89,7 @@ public class Parser {
                         }
                         if(tkn.originString().equals(":")){
                             /* not sure, may be buged */
-                            Terminal t = new Terminal("",null);
+                            Terminal t = new Terminal(null,"");
                             s = new Seq(new ArrayList<>());
                             s.items.add(t);
                             p.AppendSeq(s);
@@ -213,6 +213,8 @@ public class Parser {
         }
         return false;
     }
+
+
 
     public static boolean nonTerminalNotInMap(){
         return false;

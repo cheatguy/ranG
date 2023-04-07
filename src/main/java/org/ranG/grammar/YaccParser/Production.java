@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 /* one bnf expression */
 public class Production {
-    int number; /* serial number */
-    Token head; /* left value of bnf */
-    ArrayList<Seq> alter; /* right expression in the bnf */
+    public int number; /* serial number */
+    public Token head; /* left value of bnf */
+    public ArrayList<Seq> alter; /* right expression in the bnf */
 
     /* also return a new Pnumber = pNumber + 1 */
     public Production(Token head,int pNumber){

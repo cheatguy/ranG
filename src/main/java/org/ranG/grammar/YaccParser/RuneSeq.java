@@ -33,7 +33,7 @@ public class RuneSeq {
         }
         return this.rune[this.pos -2 ] == expect;
     }
-    public String Slice(int from){
+    public String slice(int from){
         return this.rune.toString().substring(from,this.pos);
     }
 

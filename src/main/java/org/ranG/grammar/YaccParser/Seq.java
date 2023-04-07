@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 /* token seqence of branch */
 public class Seq {
-    ArrayList<Token> items;
-    int pNumber;
-    int sNumber;
+    public ArrayList<Token> items;
+    public int pNumber;
+    public int sNumber;
     public Seq(ArrayList<Token> items){
         this.items = items;
     }

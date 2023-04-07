@@ -3,7 +3,7 @@ package org.ranG.grammar.YaccParser;
 public class Terminal implements Token{
     String val;
     CommonAttr attr;
-    public Terminal(String val,CommonAttr attr){
+    public Terminal(CommonAttr attr,String val){
         this.val = val;
         this.attr = attr;
     }

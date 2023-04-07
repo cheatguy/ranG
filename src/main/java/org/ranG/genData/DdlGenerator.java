@@ -16,11 +16,11 @@ import static org.ranG.Main.zzPath;
 
 public class DdlGenerator {
     String dsn;
-    /* double? ,not sure this global can be used in LuaParser */
     static Globals globals = JsePlatform.standardGlobals();
     public void setDsn(String dsn){
         this.dsn = dsn;
     }
+
     /*
         read lua zz file
         exec zz file

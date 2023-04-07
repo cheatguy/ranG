@@ -1,15 +1,16 @@
 package org.ranG.grammar;
 
+import org.apache.logging.log4j.Logger;
 import org.ranG.genData.KeyFun;
+import org.ranG.genData.LoggerUtil;
 import org.ranG.grammar.SqlGenerator.SQLRandomlyIterator;
-import org.ranG.grammar.YaccParser.ParseRet;
-import org.ranG.grammar.YaccParser.RuneSeq;
-import org.ranG.grammar.YaccParser.Parser;
-import org.ranG.grammar.YaccParser.Tokener;
+import org.ranG.grammar.YaccParser.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Grammar {
+    static Logger log = LoggerUtil.getLogger();
     final int tknInit = 0;
     final int inSingQuoteStr = 1;
     final int inDoubleQuoteStr = 2;
@@ -39,7 +40,7 @@ public class Grammar {
     }};
 
 
-    public boolean tknEnd(RuneSeq reader,char r){
+    public static boolean tknEnd(RuneSeq reader,char r){
         return Character.isSpaceChar(r) || r == '|' || specialRune.containsKey(r) || r == '#' || r == '{' || (r ==':' && !reader.peekEqual('=')) || (r =='/' && reader.peekEqual('*'));
     }
 
@@ -53,17 +54,41 @@ public class Grammar {
         return inTerminal;
     }
     public SQLRandomlyIterator newIterWithRander(String yy, String root, int maxRecursive, KeyFun keyf,boolean debug){
-        parse(yy);
+        ParseRet parseRet = parse(yy);
+        if(parseRet == null){
+            log.error("grammar : newIterWithRander fail to get parse result");
+            return null;
+        }
+
 
     }
 
+
+    public HashMap<String, Production> initProductionMap(ArrayList<Production> productions){
+        HashMap<String,Production> productionMap = new HashMap<>();
+        for(Production production: productions){
+            if(productionMap.containsKey(production.head.originString())){
+                Production pm = productionMap.get(production.head.originString());
+                pm.alter.addAll(production.alter);
+                continue;
+            }
+            productionMap.put(production.head.originString(),production);
+        }
+        return  productionMap;
+    }
     /* many return type*/
     public ParseRet parse(String yy){
         RuneSeq reader = new RuneSeq(yy.toCharArray(),0);
         Parser parser = new Parser();
-        Tokener tokener = new Tokener(reader);
-        ParseRet ret = parser.parseInside(IToken);
-
+        Tokener tkner = new Tokener(reader);
+        ParseRet ret = parser.parseInside(tkner);  /* 内部使用tokener实现的的func接口 */
+        if(ret == null){
+            log.error("Grammar : parseInside error");
+            return null;
+        }
+        ret.mp = initProductionMap(ret.pds);
+        return ret;
     }
+
 
 }
