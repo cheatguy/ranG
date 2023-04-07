@@ -21,7 +21,7 @@ public class RuneSeq {
     public void setPos(int pos){
         this.pos = pos;
     }
-    public boolean peakEqual(char expect){
+    public boolean peekEqual(char expect){
         if(this.pos >= this.rune.length){
             return false;
         }

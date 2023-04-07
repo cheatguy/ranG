@@ -8,7 +8,7 @@ public class ZzConfig {
     Tables tables;
     Fields fields;
     Data data;
-
+    static Logger log = LoggerUtil.getLogger();
     public ZzConfig(Tables t,Fields f,Data d){
         this.tables = t;
         this.fields = f;
@@ -20,12 +20,12 @@ public class ZzConfig {
         /* 调用了genDdl（） 获取初始数据结构，在这一步对数据结构实例化为sql String */
         /* 这里面的field 的name 获取出现问题 */
         genDdlReturn tableStmts = genDdls();
-        Logger log = LoggerUtil.getLogger();
+
         if(tableStmts == null){
             log.error("byConfig : get tableStmt error");
             return null;
         }
-        /*这里要插入的数据有问题 */
+
         ComposeGen recordGor = this.data.getRecordGen(tableStmts.arrFld);
         ArrayList<String> sql = new ArrayList<>();
         /*
@@ -54,7 +54,7 @@ public class ZzConfig {
     }
 
     public genDdlReturn genDdls(){
-        Logger log = LoggerUtil.getLogger();
+
         ArrayList<Tables.TableStmt> tableStmts = this.tables.gen();
         /* 这里的format 和ddl要区分开来 ？ */
         if(tableStmts == null){

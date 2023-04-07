@@ -5,6 +5,7 @@ import org.ranG.grammar.SqlGenerator.SQLRandomlyIterator;
 import org.ranG.grammar.YaccParser.ParseRet;
 import org.ranG.grammar.YaccParser.RuneSeq;
 import org.ranG.grammar.YaccParser.Parser;
+import org.ranG.grammar.YaccParser.Tokener;
 
 import java.util.HashMap;
 
@@ -39,7 +40,7 @@ public class Grammar {
 
 
     public boolean tknEnd(RuneSeq reader,char r){
-        return Character.isSpaceChar(r) || r == '|' || specialRune.containsKey(r) || r == '#' || r == '{' || (r ==':' && !reader.peakEqual('=')) || (r =='/' && reader.peakEqual('*'));
+        return Character.isSpaceChar(r) || r == '|' || specialRune.containsKey(r) || r == '#' || r == '{' || (r ==':' && !reader.peekEqual('=')) || (r =='/' && reader.peekEqual('*'));
     }
 
     int runeInitState(char c){
@@ -60,6 +61,7 @@ public class Grammar {
     public ParseRet parse(String yy){
         RuneSeq reader = new RuneSeq(yy.toCharArray(),0);
         Parser parser = new Parser();
+        Tokener tokener = new Tokener(reader);
         ParseRet ret = parser.parseInside(IToken);
 
     }
