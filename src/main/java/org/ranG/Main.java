@@ -41,7 +41,7 @@ public class Main {
             }else if (cl.hasOption("genSql")){
                 // -genSql jdbc:mysql://localhost:3306/cpy
                 String dsn = cl.getOptionValue("genSql");
-                SqlGenerator generator = new SqlGenerator(dsn,);
+                SqlGenerator generator = new SqlGenerator(dsn);
                 generator.act();
             }else {
                 System.out.println("not found");
