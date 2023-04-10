@@ -5,6 +5,7 @@ import org.apache.logging.log4j.core.appender.rewrite.MapRewritePolicy;
 import org.ranG.genData.LoggerUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 import static org.ranG.grammar.Grammar.specialRune;
@@ -174,40 +175,40 @@ public class Parser {
         return ret;
     }
 
-    public boolean isSpecialChar(char c){
+    public static boolean isSpecialChar(char c){
         return specialRune.containsKey(c);
     }
-    public boolean isEOF(Token tkn){
+    public static boolean isEOF(Token tkn){
         if(tkn instanceof Eof){
             return true;
         }
         return false;
     }
-    public boolean isComment(Token tkn){
+    public static boolean isComment(Token tkn){
         if(tkn instanceof Comment){
             return true;
         }
         return false;
     }
-    public boolean isTknNonTerminal(Token tkn){
+    public static  boolean isTknNonTerminal(Token tkn){
         if(tkn instanceof NonTerminal){
             return true;
         }
         return false;
     }
-    public boolean isTerminal(Token tkn){
+    public static boolean isTerminal(Token tkn){
         if(tkn instanceof Terminal){
             return true;
         }
         return false;
     }
-    public boolean isKeyword(Token tkn){
+    public static boolean isKeyword(Token tkn){
         if(tkn instanceof KeyWord){
             return true;
         }
         return false;
     }
-    public boolean isCodeBlock(Token tkn){
+    public static boolean isCodeBlock(Token tkn){
         if(tkn instanceof CodeBlock){
             return true;
         }
@@ -216,12 +217,20 @@ public class Parser {
 
 
 
-    public static boolean nonTerminalNotInMap(){
-        return false;
+    public static boolean nonTerminalNotInMap(HashMap<String,Production> pMap,Token tkn){
+        if(!(tkn instanceof NonTerminal)){
+            return false;
+        }
+
+        return !pMap.containsKey((((NonTerminal)tkn).originString()));
     }
 
-    public static boolean nonTerminalInMap(){
-        return true;
+    public static boolean nonTerminalInMap(HashMap<String,Production> pMap,Token tkn){
+        if(!(tkn instanceof NonTerminal)){
+            return false;
+        }
+
+        return pMap.containsKey((((NonTerminal)tkn).originString()));
     }
 
 
