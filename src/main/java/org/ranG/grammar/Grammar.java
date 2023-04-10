@@ -3,11 +3,14 @@ package org.ranG.grammar;
 import org.apache.logging.log4j.Logger;
 import org.ranG.genData.KeyFun;
 import org.ranG.genData.LoggerUtil;
+import org.ranG.grammar.SqlGenerator.SQLIterator;
 import org.ranG.grammar.SqlGenerator.SQLRandomlyIterator;
 import org.ranG.grammar.YaccParser.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static org.ranG.grammar.SqlGenerator.SQLRandomlyIterator.generateSQL;
 
 public class Grammar {
     static Logger log = LoggerUtil.getLogger();
@@ -53,13 +56,18 @@ public class Grammar {
         }
         return inTerminal;
     }
-    public SQLRandomlyIterator newIterWithRander(String yy, String root, int maxRecursive, KeyFun keyf,boolean debug){
+    public SQLIterator newIterWithRander(String yy, String root, int maxRecursive, KeyFun keyf,boolean debug){
         ParseRet parseRet = parse(yy);
         if(parseRet == null){
             log.error("grammar : newIterWithRander fail to get parse result");
             return null;
         }
-
+        SQLIterator it = generateSQL(parseRet.cbs,parseRet.mp,keyf,root,maxRecursive);
+        if(it ==  null){
+            log.error("newIterWithRander:fail to get iter");
+            return null;
+        }
+        return it;
 
     }
 

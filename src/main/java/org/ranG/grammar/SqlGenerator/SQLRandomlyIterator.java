@@ -1,21 +1,23 @@
 package org.ranG.grammar.SqlGenerator;
 
 import org.apache.logging.log4j.Logger;
+import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
 import org.ranG.genData.KeyFun;
 import org.ranG.genData.LoggerUtil;
+import org.ranG.genData.RetStrBool;
 import org.ranG.grammar.YaccParser.*;
 
 import java.util.*;
 
 import static org.ranG.grammar.YaccParser.Parser.*;
 
-public class SQLRandomlyIterator {
+public class SQLRandomlyIterator implements SQLIterator{
     static Logger log = LoggerUtil.getLogger();
     String productionName;
     HashMap<String, Production> productionMap;
     KeyFun keyFun;
-    LuaValue luaV;
+    Globals globals;
     StringBuilder printBuf;
     /* path info*/
     public PathInfo pathInfo;
@@ -58,9 +60,9 @@ public class SQLRandomlyIterator {
     int writeSpace(StringBuilder writer){
         writer.append(" "); // 写入空格
         return 1;
-
     }
     /* return < 0 means error */
+    /* frequently used ,may has problems */
     int handlePreSpace(boolean firstWrite,boolean parentSpace,Token tkn,StringBuilder writer){
         if(firstWrite){
             if(parentSpace){
@@ -78,6 +80,7 @@ public class SQLRandomlyIterator {
         }
         return 1;
     }
+    /*这里没有区别boolean 和error */
     public boolean generateSQLRandomly(String productionName,LinkedMap recurCounter,StringBuilder sqlBuffer,boolean parentPreSpace,SQLVisitor visitor){
         //get root production
         if(!this.productionMap.containsKey(productionName)){
@@ -139,17 +142,65 @@ public class SQLRandomlyIterator {
                     }
                 }
 
-                if()
+                if(handlePreSpace(firstWrite,parentPreSpace,item,sqlBuffer) < 0){
+                    return !firstWrite;
+                }
+                /* not sure about this */
+                sqlBuffer.append(item.originString());
+                firstWrite = false;
+            }else if(isKeyword(item)){
+                if(handlePreSpace(firstWrite,parentPreSpace,item,sqlBuffer) < 0){
+                    return !firstWrite;
+                }
+                /* keyword parse */
+                RetStrBool ret = this.keyFun.gen(item.originString());
+                if(ret == null){
+                    return !firstWrite;
+                }else if(ret.bo){
+                    sqlBuffer.append(ret.str);
+                    firstWrite = true;
 
+                }else{
+                    log.error("generateSQLRandomly: key word not support");
+                    return  !firstWrite;
+                }
 
+            }else if(isCodeBlock(item)){
+                if(handlePreSpace(firstWrite,parentPreSpace,item,sqlBuffer) < 0 ){
+                    return  !firstWrite;
+                }
+                // lua code block
+                //这originString掐头去尾
+                String luaStr = item.originString().substring(1,item.originString().length() - 1);
+                this.globals.load(luaStr).call();
+                if(this.printBuf.toString().length() > 0 ){
+                    sqlBuffer.append(this.printBuf.toString());
+                    this.printBuf.setLength(0);
+                    firstWrite = false;
+                }
+            }else{
+                //nonTerminal
+                boolean hasSubWrite;
+                if(firstWrite){
+                    hasSubWrite = this.generateSQLRandomly(item.originString(),recurCounter,sqlBuffer,parentPreSpace,visitor);
+                }else{
+                    hasSubWrite = this.generateSQLRandomly(item.originString(),recurCounter,sqlBuffer,item.hasPreSpace(),visitor);
+                }
+
+                if(firstWrite && hasSubWrite ){
+                    firstWrite = true;
+                }
             }
         }
 
 
         // 最后需要执行 go中defer满足先进后出
         recurCounter.leave(productionName);
+        return !firstWrite;
     }
+    public generateSQL(ArrayList<CodeBlock> headCodeBlocks,HashMap<String,Production> productionMap,KeyFun keyfunc,String ProductionName,int maxRecursive,){
 
+    }
 
 
 }

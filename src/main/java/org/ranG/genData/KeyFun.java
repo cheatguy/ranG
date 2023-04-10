@@ -88,6 +88,19 @@ public class KeyFun {
         }
 
     }
+    public RetStrBool gen(String key){
+        /* 返回什么是错误值 ？ */
+        if(this.funcMap.containsKey(key)){
+            String res = this.funcMap.get(key).func();
+            if(res == null){
+                return null;
+            }else{
+                RetStrBool ret  = new RetStrBool(res,true);
+            }
+        }
+        return new RetStrBool("",false );
+    }
+
 
     public class TableFunc implements IFunc{
 
@@ -96,7 +109,7 @@ public class KeyFun {
             if(tables.size() == 0){
                 Logger log = LoggerUtil.getLogger();
                 log.error("there is no table");
-                return "";
+                return null;
             }else{
                 Random rand = new Random();
                 return tables.get(rand.nextInt(tables.size())).name;
@@ -110,7 +123,7 @@ public class KeyFun {
             if (fields.size() ==0){
                 Logger log = LoggerUtil.getLogger();
                 log.error("there is no field");
-                return "";
+                return null;
             }else{
                 Random rand = new Random();
                 return("`"+fields.get(rand.nextInt(fields.size())).name+"`");
@@ -124,7 +137,7 @@ public class KeyFun {
             if (fields.size() ==0) {
                 Logger log = LoggerUtil.getLogger();
                 log.error("there is no field");
-                return "";
+                return null;
             }else{
                 Random rand = new Random();
                 return("`"+fields.get(rand.nextInt(fields.size())).name+"`");
@@ -138,7 +151,7 @@ public class KeyFun {
             if(fieldInt.size() == 0){
                 Logger log = LoggerUtil.getLogger();
                 log.error("there is no int field");
-                return "";
+                return null;
             }else{
                 Random rand = new Random();
                 return("`"+fieldInt.get(rand.nextInt(fieldInt.size())).name+"`");
@@ -152,7 +165,7 @@ public class KeyFun {
             if(fieldInt.size() == 0){
                 Logger log = LoggerUtil.getLogger();
                 log.error("there is no int field");
-                return "";
+                return null;
             }else {
                 return joinFields(fieldInt);
             }
@@ -166,7 +179,7 @@ public class KeyFun {
             if(fieldChar.size() == 0){
                 Logger log = LoggerUtil.getLogger();
                 log.error("there is no char field");
-                return "";
+                return null;
             }else {
                 Random rand = new Random();
                 return("`"+fieldChar.get(rand.nextInt(fieldChar.size())).name+"`");
@@ -180,7 +193,7 @@ public class KeyFun {
             if(fieldChar.size() == 0){
                 Logger log = LoggerUtil.getLogger();
                 log.error("there is no char field");
-                return "";
+                return null;
             }else {
                 return joinFields(fieldChar);
             }
@@ -194,7 +207,7 @@ public class KeyFun {
             if(fields.size() == 0){
                 Logger log = LoggerUtil.getLogger();
                 log.error("there is no field");
-                return "";
+                return null;
             }else {
                 return joinFields(fields);
             }
