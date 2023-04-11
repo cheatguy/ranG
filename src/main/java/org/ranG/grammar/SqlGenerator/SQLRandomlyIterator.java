@@ -3,16 +3,18 @@ package org.ranG.grammar.SqlGenerator;
 import org.apache.logging.log4j.Logger;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.lib.jse.JsePlatform;
 import org.ranG.genData.KeyFun;
 import org.ranG.genData.LoggerUtil;
 import org.ranG.genData.RetStrBool;
 import org.ranG.grammar.YaccParser.*;
 
+import java.nio.file.Path;
 import java.util.*;
 
 import static org.ranG.grammar.YaccParser.Parser.*;
 
-public class SQLRandomlyIterator implements SQLIterator{
+public class SQLRandomlyIterator implements SQLIterator {
     static Logger log = LoggerUtil.getLogger();
     String productionName;
     HashMap<String, Production> productionMap;
@@ -23,7 +25,7 @@ public class SQLRandomlyIterator implements SQLIterator{
     public PathInfo pathInfo;
     int maxRecursive;
 
-    public PathInfo getPathInfo(){
+    public PathInfo pathInfo(){
         return this.pathInfo;
     }
     public void clearPath(){
@@ -42,9 +44,23 @@ public class SQLRandomlyIterator implements SQLIterator{
             }
         };
         StringBuilder sqlBuffer;
+        // todo :while part
         while(true){
 
         }
+    }
+    /*default non param */
+    public SQLRandomlyIterator(){
+
+    }
+    SQLRandomlyIterator(String productionName, HashMap<String,Production> productionMap, KeyFun keyFun, Globals l, StringBuilder printBuf, int maxRecursive, PathInfo pathInfo){
+        this.productionName = productionName;
+        this.productionMap = productionMap;
+        this.keyFun = keyFun;
+        this.globals = l;
+        this.printBuf = printBuf;
+        this.maxRecursive = maxRecursive;
+        this.pathInfo = pathInfo;
 
     }
     boolean willRecursive(Seq seq,HashMap<String,Boolean> set){
@@ -198,7 +214,28 @@ public class SQLRandomlyIterator implements SQLIterator{
         recurCounter.leave(productionName);
         return !firstWrite;
     }
-    public generateSQL(ArrayList<CodeBlock> headCodeBlocks,HashMap<String,Production> productionMap,KeyFun keyfunc,String ProductionName,int maxRecursive,){
+    // 一个内部类，用于专门给lua函数调用
+    public class MyJavaObject {
+        public String sayHello() {
+            return "Hello from Java!";
+        }
+    }
+    public  SQLIterator generateSQL(ArrayList<CodeBlock> headCodeBlocks,HashMap<String,Production> productionMap,KeyFun keyfunc,String ProductionName,int maxRecursive){
+        Globals l = JsePlatform.standardGlobals();
+        /* run head code block */
+        for(CodeBlock  codeblcok:headCodeBlocks){
+            String luaStr = codeblcok.originString().substring( 1 ,codeblcok.originString().length() - 1);
+        }
+        StringBuilder pBuf = new StringBuilder();
+
+        // cover origin lua print
+        //todo 这部分我暂时忽略了Lua中print的设置
+//        MyJavaObject javaFunction = new MyJavaObject();
+//        l.set("print", javaFunction);
+
+
+
+        return new SQLRandomlyIterator(productionName,productionMap,keyFun,l,pBuf,maxRecursive,new PathInfo());
 
     }
 

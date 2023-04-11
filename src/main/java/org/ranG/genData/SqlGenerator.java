@@ -2,6 +2,7 @@ package org.ranG.genData;
 
 import org.apache.logging.log4j.Logger;
 import org.ranG.grammar.Grammar;
+import org.ranG.grammar.SqlGenerator.SQLIterator;
 import org.ranG.grammar.SqlGenerator.SQLVisitor;
 
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.HashMap;
@@ -19,8 +21,10 @@ import static org.ranG.Main.*;
 public class SqlGenerator {
     String dsn;
     int queryNum = 100;
+    static Logger log = LoggerUtil.getLogger();
     Map<String, Function<String, String>> functionMap = new HashMap<>();
     static Connection conn;
+    ArrayList<String> randomSqls
     public SqlGenerator(String dsn){
         this.dsn = dsn;
     }
@@ -84,16 +88,33 @@ public class SqlGenerator {
 
     }
 
-    public SQLVisitor getIter(KeyFun keyf){
+    public SQLIterator getIter(KeyFun keyf){
         String yy = loadYy();
         Grammar grammar = new Grammar();
-        grammar.newIterWithRander(yy,root,maxRecursive,keyf,debug);
+        SQLIterator iterator= grammar.newIterWithRander(yy,root,maxRecursive,keyf);
+        if(iterator == null){
+            log.error("getIter: fail to get iter");
+        }
+        return  iterator;
 
 
     }
+    SQLVisitor fixedTimesVisitor(IFixedTimesVisitor ifunc,int queryNum){
+
+        return  new SQLVisitor() {
+            @Override
+            public boolean func(String sql) {
+                i[0] = 1;
+                return false;
+            }
+        }
+    }
     public ArrayList<String> getRandSqls(KeyFun keyf){
-        ArrayList<String> randomSqls = new ArrayList<>();
-        SQLVisitor sqlIter = getIter(keyf);
+        this.randomSqls= new ArrayList<>();
+        SQLIterator sqlIter = getIter(keyf);
+
+
+        sqlIter.visit(fixedTimesVisitor(,queryNum))
 
 
     }

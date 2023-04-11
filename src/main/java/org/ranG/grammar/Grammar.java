@@ -10,7 +10,6 @@ import org.ranG.grammar.YaccParser.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static org.ranG.grammar.SqlGenerator.SQLRandomlyIterator.generateSQL;
 
 public class Grammar {
     static Logger log = LoggerUtil.getLogger();
@@ -56,18 +55,20 @@ public class Grammar {
         }
         return inTerminal;
     }
-    public SQLIterator newIterWithRander(String yy, String root, int maxRecursive, KeyFun keyf,boolean debug){
+    public SQLIterator newIterWithRander(String yy, String root, int maxRecursive, KeyFun keyf){
+        /* parse yy file first */
         ParseRet parseRet = parse(yy);
         if(parseRet == null){
             log.error("grammar : newIterWithRander fail to get parse result");
             return null;
         }
-        SQLIterator it = generateSQL(parseRet.cbs,parseRet.mp,keyf,root,maxRecursive);
-        if(it ==  null){
+        SQLRandomlyIterator sqlRandomlyIterator = new SQLRandomlyIterator();
+        SQLIterator sqlIter = sqlRandomlyIterator.generateSQL(parseRet.cbs,parseRet.mp,keyf,root,maxRecursive);
+        if(sqlIter ==  null){
             log.error("newIterWithRander:fail to get iter");
             return null;
         }
-        return it;
+        return sqlIter;
 
     }
 
