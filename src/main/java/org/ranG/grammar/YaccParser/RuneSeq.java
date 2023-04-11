@@ -7,6 +7,7 @@ public class RuneSeq {
         this.rune = rune;
         this.pos  = pos;
     }
+    /* return 0 means err */
     public char readRune(){
         if(this.pos>= this.rune.length){
             return 0;

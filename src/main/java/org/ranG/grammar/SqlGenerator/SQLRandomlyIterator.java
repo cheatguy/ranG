@@ -4,6 +4,7 @@ import org.apache.logging.log4j.Logger;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.JsePlatform;
+import org.ranG.genData.IFunc;
 import org.ranG.genData.KeyFun;
 import org.ranG.genData.LoggerUtil;
 import org.ranG.genData.RetStrBool;
@@ -43,11 +44,23 @@ public class SQLRandomlyIterator implements SQLIterator {
                 return res;
             }
         };
-        StringBuilder sqlBuffer;
+        StringBuilder sqlBuffer = new StringBuilder();
         // todo :while part
+        int visitCnt = 0;
         while(true){
+            /* 既然没有管他的error，那么就不进行判断了*/
+            RetgenerateSQL ret = this.generateSQLRandomly(this.productionName,new LinkedMap(),sqlBuffer,false,wrapper);
+            sqlBuffer.setLength(0);
+            if(ret.error != "" && !ret.error.equals("normalStop")){
+                return -1;
+            }
 
+            if(ret.error.equals("normalStop") || !wrapper.func(sqlBuffer.toString())){
+                return 1;
+            }
+            sqlBuffer.setLength(0);;
         }
+
     }
     /*default non param */
     public SQLRandomlyIterator(){
@@ -96,12 +109,21 @@ public class SQLRandomlyIterator implements SQLIterator {
         }
         return 1;
     }
-    /*这里没有区别boolean 和error */
-    public boolean generateSQLRandomly(String productionName,LinkedMap recurCounter,StringBuilder sqlBuffer,boolean parentPreSpace,SQLVisitor visitor){
+    class RetgenerateSQL{
+
+        public boolean bo;
+        public String error; /* return "" means no error */
+        RetgenerateSQL(boolean bo,String error){
+            this.bo = bo;
+            this.error = error;
+        }
+    }
+
+    public RetgenerateSQL generateSQLRandomly(String productionName,LinkedMap recurCounter,StringBuilder sqlBuffer,boolean parentPreSpace,SQLVisitor visitor){
         //get root production
         if(!this.productionMap.containsKey(productionName)){
             log.error("generateSQLRandomly: production not found");
-            return false;
+            return new RetgenerateSQL(false,"production not found");
         }
         Production production = this.productionMap.get(productionName);
         this.pathInfo.productionSet.add(production);
@@ -109,7 +131,7 @@ public class SQLRandomlyIterator implements SQLIterator {
         recurCounter.enter(productionName);
         if(recurCounter.m.get(productionName) > this.maxRecursive){
             log.error("generateSQLRandomly: expression recursive exceed max loop");
-            return false;
+            return new RetgenerateSQL(false,"expression recursive exceed max loop");
         }
         HashMap <String,Boolean> nearMaxRecur = new HashMap<>();
         for (Map.Entry<String, Integer> entry : recurCounter.m.entrySet()) {
@@ -127,7 +149,7 @@ public class SQLRandomlyIterator implements SQLIterator {
         }
         if(selectableSeqs.size() == 0){
             log.error("generateSQLRandomly:recursive num exceed ");
-            return false;
+            return new RetgenerateSQL(false,"expression recursive exceed max loop");
         }
 
         // rand
@@ -147,7 +169,7 @@ public class SQLRandomlyIterator implements SQLIterator {
                     // not last char in bnf
                     if(selectIndex  != production.alter.size() -1 || i != seqs.items.size() -1){
                         if(!visitor.func(sqlBuffer.toString())){
-                            return !firstWrite;
+                            return new RetgenerateSQL(!firstWrite,"normalStop");
                         }
                         sqlBuffer.setLength(0);
                         firstWrite = true;
@@ -159,31 +181,31 @@ public class SQLRandomlyIterator implements SQLIterator {
                 }
 
                 if(handlePreSpace(firstWrite,parentPreSpace,item,sqlBuffer) < 0){
-                    return !firstWrite;
+                    return new RetgenerateSQL(!firstWrite,"handle space err");
                 }
                 /* not sure about this */
                 sqlBuffer.append(item.originString());
                 firstWrite = false;
             }else if(isKeyword(item)){
                 if(handlePreSpace(firstWrite,parentPreSpace,item,sqlBuffer) < 0){
-                    return !firstWrite;
+                    return new RetgenerateSQL(!firstWrite,"handle preSpace err");
                 }
                 /* keyword parse */
                 RetStrBool ret = this.keyFun.gen(item.originString());
                 if(ret == null){
-                    return !firstWrite;
+                    return new RetgenerateSQL(!firstWrite,"fail to gen ");
                 }else if(ret.bo){
                     sqlBuffer.append(ret.str);
                     firstWrite = true;
 
                 }else{
                     log.error("generateSQLRandomly: key word not support");
-                    return  !firstWrite;
+                    return  new RetgenerateSQL(!firstWrite,"not support keyword");
                 }
 
             }else if(isCodeBlock(item)){
                 if(handlePreSpace(firstWrite,parentPreSpace,item,sqlBuffer) < 0 ){
-                    return  !firstWrite;
+                    return  new RetgenerateSQL(!firstWrite,"fail to run lua");
                 }
                 // lua code block
                 //这originString掐头去尾
@@ -196,15 +218,18 @@ public class SQLRandomlyIterator implements SQLIterator {
                 }
             }else{
                 //nonTerminal
-                boolean hasSubWrite;
+                RetgenerateSQL hasSubWrite;
                 if(firstWrite){
                     hasSubWrite = this.generateSQLRandomly(item.originString(),recurCounter,sqlBuffer,parentPreSpace,visitor);
                 }else{
                     hasSubWrite = this.generateSQLRandomly(item.originString(),recurCounter,sqlBuffer,item.hasPreSpace(),visitor);
                 }
 
-                if(firstWrite && hasSubWrite ){
-                    firstWrite = true;
+                if(firstWrite && hasSubWrite.bo){
+                    firstWrite = false;
+                }
+                if(hasSubWrite.error !=""){
+                    return new RetgenerateSQL(!firstWrite,hasSubWrite.error);
                 }
             }
         }
@@ -212,7 +237,7 @@ public class SQLRandomlyIterator implements SQLIterator {
 
         // 最后需要执行 go中defer满足先进后出
         recurCounter.leave(productionName);
-        return !firstWrite;
+        return new RetgenerateSQL(!firstWrite,"");
     }
     // 一个内部类，用于专门给lua函数调用
     public class MyJavaObject {
@@ -220,8 +245,19 @@ public class SQLRandomlyIterator implements SQLIterator {
             return "Hello from Java!";
         }
     }
+
+    void registerKeyFun(Globals l,KeyFun keyfunc){
+
+        for(Map.Entry<String, IFunc> entry : keyfunc.funcMap.entrySet()){
+            String funName = entry.getKey();
+            IFunc function = entry.getValue();
+        }
+
+
+    }
     public  SQLIterator generateSQL(ArrayList<CodeBlock> headCodeBlocks,HashMap<String,Production> productionMap,KeyFun keyfunc,String ProductionName,int maxRecursive){
         Globals l = JsePlatform.standardGlobals();
+        registerKeyFun(l,keyfunc);
         /* run head code block */
         for(CodeBlock  codeblcok:headCodeBlocks){
             String luaStr = codeblcok.originString().substring( 1 ,codeblcok.originString().length() - 1);
@@ -232,8 +268,6 @@ public class SQLRandomlyIterator implements SQLIterator {
         //todo 这部分我暂时忽略了Lua中print的设置
 //        MyJavaObject javaFunction = new MyJavaObject();
 //        l.set("print", javaFunction);
-
-
 
         return new SQLRandomlyIterator(productionName,productionMap,keyFun,l,pBuf,maxRecursive,new PathInfo());
 

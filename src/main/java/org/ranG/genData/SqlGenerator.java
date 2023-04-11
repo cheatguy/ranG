@@ -24,7 +24,7 @@ public class SqlGenerator {
     static Logger log = LoggerUtil.getLogger();
     Map<String, Function<String, String>> functionMap = new HashMap<>();
     static Connection conn;
-    ArrayList<String> randomSqls
+    ArrayList<String> randomSqls;
     public SqlGenerator(String dsn){
         this.dsn = dsn;
     }
@@ -99,22 +99,39 @@ public class SqlGenerator {
 
 
     }
-    SQLVisitor fixedTimesVisitor(IFixedTimesVisitor ifunc,int queryNum){
 
+    SQLVisitor fixedTimesVisitor(IFixedTimesVisitor ifunc,int queryNum){
+        final int[] cnt = {0};
+        /*希望在匿名内中修改cnt的值 */
+        /* todo :这里这个计数器有问题*/
         return  new SQLVisitor() {
+
             @Override
             public boolean func(String sql) {
-                i[0] = 1;
+                ifunc.func(cnt[0],sql);
+                cnt[0]++;
+                if(cnt[0] == queryNum){
+                    return false;
+                }
                 return false;
             }
-        }
+        };
     }
+
     public ArrayList<String> getRandSqls(KeyFun keyf){
         this.randomSqls= new ArrayList<>();
         SQLIterator sqlIter = getIter(keyf);
 
-
-        sqlIter.visit(fixedTimesVisitor(,queryNum))
+        /*todo 存在问题 */
+        //这里相当于一个计数器，生成 times 个的sql语句
+        //目前就生成一条
+        sqlIter.visit(fixedTimesVisitor( new IFixedTimesVisitor() {
+            @Override
+            public void func(int i, String sql) {
+                randomSqls.add(sql);
+            }
+        },queryNum));
+        return this.randomSqls;
 
 
     }
@@ -129,7 +146,7 @@ public class SqlGenerator {
         KeyFun keyF = byDb();
         ArrayList<String> randSqls = new ArrayList<>();
         randSqls = getRandSqls(keyF);
-
+        System.out.println("gensql succeess");
 
 
     }

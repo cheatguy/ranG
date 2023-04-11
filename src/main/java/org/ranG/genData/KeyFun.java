@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.function.Function;
 
 public class KeyFun {
-    HashMap<String,IFunc> funcMap = new HashMap<>();
+    public HashMap<String,IFunc> funcMap = new HashMap<>();
     ArrayList<Tables.TableStmt> tables;
     ArrayList<Fields.FieldExec> fields;
     ArrayList<Fields.FieldExec> fieldInt = new ArrayList<>();
@@ -77,9 +77,10 @@ public class KeyFun {
         this.funcMap.put("_field_list",f8);
 
 
+        /* traverse */
         //这部分其实是把gmap中的对象注册到funcMap中,使用到了匿名函数 */
         for (Map.Entry<String, Generator> entry : Register.gMap.entrySet()) {
-            this.funcMap.put(entry.getKey(), new IFunc() {
+            this.funcMap.put("_"+entry.getKey(), new IFunc() {
                 @Override
                 public String func() {
                    return entry.getValue().gen();

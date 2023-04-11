@@ -46,6 +46,7 @@ public class Tokener implements IToken{
         while(true){
             /* java中是不存在EOF的 */
                 char c = reader.readRune();
+                /*todo:这里有个终止条件,需要修改 */
 //                if(c == 0){ /* 返回到最后一个EOF */
 //                    return null;
 //                }
