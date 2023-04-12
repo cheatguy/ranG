@@ -49,6 +49,7 @@ public class KeyFun {
         this.fields = fields;
 
         /* fClass aims to simplify the type */
+        /* 没有兼顾 float类型 */
         for(Fields.FieldExec fe:fields){
             if(fClass.containsKey(fe.getType())){
                 if(fClass.get(fe.getType()) == fInt){
@@ -75,6 +76,7 @@ public class KeyFun {
         this.funcMap.put("_field_char",f6);
         this.funcMap.put("_field_char_list",f7);
         this.funcMap.put("_field_list",f8);
+
 
 
         /* traverse */
@@ -145,6 +147,7 @@ public class KeyFun {
             }
         }
     }
+    /* potential problem ,may get `pk` in the result */
     public class FieldIntFunc implements IFunc{
 
         @Override

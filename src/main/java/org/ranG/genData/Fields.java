@@ -45,9 +45,9 @@ public class Fields  {
         public String getType(){
             int idx = this.tp.indexOf("(");
             if(idx == -1){
-                return this.tp;
+                return this.tp.toLowerCase();
             }else{
-                return this.tp.substring(0,idx); //返回 （ 前的内容，like decimal（40，20）
+                return this.tp.substring(0,idx).toLowerCase(); //返回 （ 前的内容，like decimal（40，20）
             }
         }
     }

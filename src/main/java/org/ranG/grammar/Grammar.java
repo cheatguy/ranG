@@ -27,19 +27,21 @@ public class Grammar {
     final int inKeyWord = 11;
     final int inNonTerminal = 12;
     final int inTerminal = 13;
-    public static HashMap<Character,Integer> stateMap = new HashMap<>(){{
+    public static HashMap<Character,Integer> stateMap = new HashMap<>();
+    static {
         stateMap.put('\'',1);
         stateMap.put('"',2);
         stateMap.put('#',3);
         stateMap.put('{',5);
         stateMap.put('_',11);
-    }};
-    public static HashMap<Character,Boolean> specialRune = new HashMap<>(){{
+    }
+    public static HashMap<Character,Boolean> specialRune = new HashMap<>();
+    static {
         specialRune.put(',',true);
         specialRune.put(';',true);
         specialRune.put('(',true);
         specialRune.put(')',true);
-    }};
+    }
 
 
     public static boolean tknEnd(RuneSeq reader,char r){

@@ -37,41 +37,7 @@ public class SqlGenerator {
         }
         return true;
     }
-    public KeyFun byDb(){
-        Logger log = LoggerUtil.getLogger();
-        try{
-            DatabaseMetaData metaData = conn.getMetaData();
-            ResultSet rs = metaData.getTables(null, null, null, new String[]{"TABLE"});
-            ArrayList<Tables.TableStmt> tableStmts = new ArrayList<>();
-            ArrayList<Fields.FieldExec> fieldExecs = new ArrayList<>();
-            while(rs.next()){
-                String tableName = rs.getString("TABLE_NAME");
-                Tables tb = new Tables();
-                Tables.TableStmt tmp = tb.new TableStmt();
-                tmp.name = tableName;
-                tableStmts.add(tmp);
-            }
-            if(tableStmts.size() > 0){
-                log.error("sqlGenerator act: tableStatement size < 0");
-            }
-            /* get the column info，just focus on first tb */
-            rs = metaData.getColumns(null, null, tableStmts.get(0).name, null);
-            while(rs.next()){
-                String fieldName,fieldType;
-                fieldName = rs.getString("COLUMN_NAME");
-                fieldType = rs.getString("TYPE_NAME");
-                Fields fd = new Fields();
-                Fields.FieldExec tmp = fd.new FieldExec();
-                tmp.name = fieldName;
-                tmp.tp   = fieldType;
-                fieldExecs.add(tmp);
-            }
-            return new KeyFun(tableStmts,fieldExecs);
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public String loadYy(){
         Logger log = LoggerUtil.getLogger();
@@ -90,6 +56,7 @@ public class SqlGenerator {
 
     public SQLIterator getIter(KeyFun keyf){
         String yy = loadYy();
+        /* todo : break point */
         Grammar grammar = new Grammar();
         SQLIterator iterator= grammar.newIterWithRander(yy,root,maxRecursive,keyf);
         if(iterator == null){
@@ -120,6 +87,8 @@ public class SqlGenerator {
 
     public ArrayList<String> getRandSqls(KeyFun keyf){
         this.randomSqls= new ArrayList<>();
+
+        /* break point */
         SQLIterator sqlIter = getIter(keyf);
 
         /*todo 存在问题 */
@@ -135,7 +104,41 @@ public class SqlGenerator {
 
 
     }
+    public KeyFun byDb(){
+        Logger log = LoggerUtil.getLogger();
+        try{
+            DatabaseMetaData metaData = conn.getMetaData();
+            ResultSet rs = metaData.getTables(null, null, null, new String[]{"TABLE"});
+            ArrayList<Tables.TableStmt> tableStmts = new ArrayList<>();
+            ArrayList<Fields.FieldExec> fieldExecs = new ArrayList<>();
+            while(rs.next()){
+                String tableName = rs.getString("TABLE_NAME");
+                Tables tb = new Tables();
+                Tables.TableStmt tmp = tb.new TableStmt();
+                tmp.name = tableName;
+                tableStmts.add(tmp);
+            }
+            if(tableStmts.size() < 0){
+                log.error("sqlGenerator act: tableStatement size < 0");
+            }
+            /* get the column info，just focus on first tb */
+            rs = metaData.getColumns(null, null, tableStmts.get(0).name, null);
+            while(rs.next()){
+                String fieldName,fieldType;
+                fieldName = rs.getString("COLUMN_NAME");
+                fieldType = rs.getString("TYPE_NAME");
+                Fields fd = new Fields();
+                Fields.FieldExec tmp = fd.new FieldExec();
+                tmp.name = fieldName;
+                tmp.tp   = fieldType;
+                fieldExecs.add(tmp);
+            }
+            return new KeyFun(tableStmts,fieldExecs);
 
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public void act(){
         Logger log = LoggerUtil.getLogger();
         /* connect to db */

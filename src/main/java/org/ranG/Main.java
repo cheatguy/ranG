@@ -10,7 +10,7 @@ public class Main {
     public static String zzPath = "D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\default.zz.lua";
 //    public static String zzPath = "D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\test.lua";
     public static  int queryNum = 100;
-    public static String yyPath ="D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\examples\\functions.yy";
+    public static String yyPath ="D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\examples\\toturial\\create_table_then_drop.yy";
     public static boolean debug = false;
     public static String root = "query";  /* root bnf expression to generate sql */
     public static  int maxRecursive = 5;

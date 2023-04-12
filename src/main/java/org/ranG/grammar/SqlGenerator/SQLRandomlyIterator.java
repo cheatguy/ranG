@@ -246,6 +246,7 @@ public class SQLRandomlyIterator implements SQLIterator {
         }
     }
 
+    /*这里没有注册 */
     void registerKeyFun(Globals l,KeyFun keyfunc){
 
         for(Map.Entry<String, IFunc> entry : keyfunc.funcMap.entrySet()){
