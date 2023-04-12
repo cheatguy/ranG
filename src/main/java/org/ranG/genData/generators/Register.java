@@ -6,8 +6,6 @@ import java.util.HashMap;
 
 public class Register {
     public static   HashMap<String,Generator> gMap = new HashMap<>();
-
-
     static {
         gMap.put("digit", new Digit());
         gMap.put("letter",new Letter());

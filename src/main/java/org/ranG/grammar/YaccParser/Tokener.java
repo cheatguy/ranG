@@ -115,6 +115,7 @@ public class Tokener implements IToken{
                             return new NonTerminal(common,reader.slice(lookBackPos));
                         }
                         /* skip white space */
+                        /* error 这里不能及时把换行给识别出来 */
                         if(tknEnd(reader,c)){
                             reader.unReadRune();
                             return new NonTerminal(common,reader.slice(lookBackPos));
@@ -165,7 +166,7 @@ public class Tokener implements IToken{
                         break;
                     }
 
-                    case inComment : {
+                    case inComment : {//until pos == 29
                         // look back
                         if(c==0  || c =='\n'){
                             state = inTerminal;
@@ -173,6 +174,7 @@ public class Tokener implements IToken{
                             continue;
                         }
                         if(reader.lastEqual('*') && c == '/'){
+                            /* 这里可能有问题,lookBack的值读不出来 */
                             return new Comment(reader.slice(lookBackPos));
                         }
 

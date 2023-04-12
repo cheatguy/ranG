@@ -28,6 +28,7 @@ public class Parser {
         int pNumber = 0;
         Token lastTerm = null;
         int state = initState;
+        /* 收集一些lua脚本代码执行，是头部代码块 */
         CodeBlockRet ret = collectHeadCodeBlocks(tk);
         if(ret == null){
             log.error("parseInside: get headCodeBlock fail");
@@ -79,6 +80,7 @@ public class Parser {
                 }
                 /* state after first term fetched */
                 case termFetchedState : {
+                    /* 读入的是 CREATE TABLE 这种串 */
                     if(tkn instanceof Eof){
                         p.AppendSeq(s);
                         prods.add(p);
@@ -108,6 +110,7 @@ public class Parser {
                     break;
                 }
                 case prepareNextProdState:{
+                    /* core part ,read structure */
                     if(tkn instanceof Eof){
                         s.items.add(lastTerm);
                         p.AppendSeq(s);;
@@ -140,6 +143,7 @@ public class Parser {
                 }
             }
         }
+        /*cbs主要是预定义的lua代码块，可能是为空的*/
         ParseRet returnV = new ParseRet(ret.cbs,prods,null);
         return returnV;
 
@@ -160,13 +164,14 @@ public class Parser {
         ArrayList<CodeBlock> cbs = new ArrayList<>();
         Token t;
         while(true){
+            /*返回一个非 comment的token */
             t = skipComment(tk);
             if( t == null){
                 log.error("collectHeadCodeBlocks: skip comment error");
                 return null;
             }
-            if( tk instanceof CodeBlock){
-                cbs.add((CodeBlock)tk);
+            if( t instanceof CodeBlock){
+                cbs.add((CodeBlock)t);
             }else{
                 break;
             }

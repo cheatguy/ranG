@@ -8,7 +8,13 @@ public class Seq {
     public int pNumber;
     public int sNumber;
     public Seq(ArrayList<Token> items){
-        this.items = items;
+        if(items == null){
+            this.items = new ArrayList<>();
+        }else{
+            this.items = items;
+        }
+
+
     }
     public String getString(){
         StringBuilder sb = new StringBuilder();

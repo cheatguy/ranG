@@ -1,5 +1,6 @@
 package org.ranG.grammar.YaccParser;
 
+/* 关键字，_开头 */
 public class KeyWord implements Token{
     String val;
     CommonAttr attr;

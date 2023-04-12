@@ -12,6 +12,7 @@ public class Production {
     public Production(Token head,int pNumber){
         this.head = head;
         this.number = pNumber;
+        alter = new ArrayList<>();
     }
     public void AppendSeq(Seq s){
         s.pNumber = this.number;
