@@ -45,16 +45,15 @@ public class SQLRandomlyIterator implements SQLIterator {
             }
         };
         StringBuilder sqlBuffer = new StringBuilder();
-        // todo :while part
+
         int visitCnt = 0;
         while(true){
-            /* 既然没有管他的error，那么就不进行判断了*/
             RetgenerateSQL ret = this.generateSQLRandomly(this.productionName,new LinkedMap(),sqlBuffer,false,wrapper);
-            sqlBuffer.setLength(0);
             if(ret.error != "" && !ret.error.equals("normalStop")){
                 return -1;
             }
 
+            /* 这里要达到max 才会返回 wrapper.func 的真值 */
             if(ret.error.equals("normalStop") || !wrapper.func(sqlBuffer.toString())){
                 return 1;
             }
@@ -77,8 +76,9 @@ public class SQLRandomlyIterator implements SQLIterator {
 
     }
     boolean willRecursive(Seq seq,HashMap<String,Boolean> set){
+
         for(Token item :seq.items){
-            if(isTknNonTerminal(item) && set.get(item.originString())){
+            if(isTknNonTerminal(item)&& set.containsKey(item.originString()) && set.get(item.originString())){
                 return true;
             }
         }
@@ -100,7 +100,7 @@ public class SQLRandomlyIterator implements SQLIterator {
                     return -1;
                 }
             }
-            return 1;
+//            return 1;
         }
         if(tkn.hasPreSpace()){
             if(writeSpace(writer) < 0){
@@ -137,11 +137,13 @@ public class SQLRandomlyIterator implements SQLIterator {
         for (Map.Entry<String, Integer> entry : recurCounter.m.entrySet()) {
             String key = entry.getKey();
             Integer value = entry.getValue();
+            /*这里的max recursive 很难达到 */
             if(value.intValue() == this.maxRecursive){
                 nearMaxRecur.put(key,true);
             }
         }
         ArrayList<Seq> selectableSeqs = new ArrayList<>();
+        /* 这里recursive 出现了问题 */
         for(Seq seq:production.alter){
             if(!willRecursive(seq,nearMaxRecur)){
                 selectableSeqs.add(seq);
@@ -161,9 +163,7 @@ public class SQLRandomlyIterator implements SQLIterator {
         for(int i =0;i<seqs.items.size();i++){
             Token item = seqs.items.get(i);
             if(isTerminal(item) || nonTerminalNotInMap(this.productionMap,item)){
-                // terminal
-                //ignore print debug
-
+                // 1. is a terminal 2. is a non-terminal and Not in the productionMap
                 //semicolon
                 if(item.originString().equals(";")){
                     // not last char in bnf
@@ -184,6 +184,7 @@ public class SQLRandomlyIterator implements SQLIterator {
                     return new RetgenerateSQL(!firstWrite,"handle space err");
                 }
                 /* not sure about this */
+//                sqlBuffer.append(isTknNonTerminal(item));
                 sqlBuffer.append(item.originString());
                 firstWrite = false;
             }else if(isKeyword(item)){
@@ -217,10 +218,12 @@ public class SQLRandomlyIterator implements SQLIterator {
                     firstWrite = false;
                 }
             }else{
-                //nonTerminal
+                //nonTerminal recursive
                 RetgenerateSQL hasSubWrite;
                 if(firstWrite){
+                    /* first write meaning for ? */
                     hasSubWrite = this.generateSQLRandomly(item.originString(),recurCounter,sqlBuffer,parentPreSpace,visitor);
+                    /* this got error `normalStop` */
                 }else{
                     hasSubWrite = this.generateSQLRandomly(item.originString(),recurCounter,sqlBuffer,item.hasPreSpace(),visitor);
                 }
@@ -240,11 +243,6 @@ public class SQLRandomlyIterator implements SQLIterator {
         return new RetgenerateSQL(!firstWrite,"");
     }
     // 一个内部类，用于专门给lua函数调用
-    public class MyJavaObject {
-        public String sayHello() {
-            return "Hello from Java!";
-        }
-    }
 
     /*这里没有注册 */
     void registerKeyFun(Globals l,KeyFun keyfunc){
@@ -256,7 +254,7 @@ public class SQLRandomlyIterator implements SQLIterator {
 
 
     }
-    public  SQLIterator generateSQL(ArrayList<CodeBlock> headCodeBlocks,HashMap<String,Production> productionMap,KeyFun keyfunc,String ProductionName,int maxRecursive){
+    public  SQLIterator generateSQL(ArrayList<CodeBlock> headCodeBlocks,HashMap<String,Production> productionMap,KeyFun keyfunc,String productionName,int maxRecursive){
         Globals l = JsePlatform.standardGlobals();
         registerKeyFun(l,keyfunc);
         /* run head code block */
@@ -270,7 +268,7 @@ public class SQLRandomlyIterator implements SQLIterator {
 //        MyJavaObject javaFunction = new MyJavaObject();
 //        l.set("print", javaFunction);
 
-        return new SQLRandomlyIterator(productionName,productionMap,keyFun,l,pBuf,maxRecursive,new PathInfo());
+        return new SQLRandomlyIterator(productionName,productionMap,keyfunc,l,pBuf,maxRecursive,new PathInfo());
 
     }
 

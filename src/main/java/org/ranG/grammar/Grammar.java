@@ -98,6 +98,8 @@ public class Grammar {
             log.error("Grammar : parseInside error");
             return null;
         }
+        /* hread string to production map */
+        /* 这里的head 是指的 的bnf范式中的头，就像 query：  create：这种 */
         ret.mp = initProductionMap(ret.pds);
         return ret;
     }

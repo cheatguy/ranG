@@ -14,8 +14,14 @@ public class LinkedMap {
     }
     public void enter(String key){
         this.order.add(key);
+        /*这里存在问题 */
         /* 原来的kv 值 +1 */
-        this.m.put(key,this.m.get(key) + 1);
+        if(this.m.containsKey(key)){
+            this.m.put(key,this.m.get(key) + 1);
+        }else{
+            this.m.put(key,1); /* init as 0 ,but increase 1 */
+        }
+
     }
     public void leave(String key){
         this.m.put(key,this.m.get(key) - 1);

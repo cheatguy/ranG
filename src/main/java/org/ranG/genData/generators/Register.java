@@ -37,7 +37,7 @@ public class Register {
 
         gMap.put("timestamp",new TimeStamp()); /* 这里没有对时间戳进行赋值，在gen（） 中存在生成时间*/
         /* todo : english 这部分太麻烦了 ，暂时不做 */
-        //gMap.put("english",new Temporal(Temporal.dd,Temporal.SSS));
+        gMap.put("english",new English());
 
         gMap.put("char",new Char(10));
         gMap.put("bool",new Int(0,1,""));

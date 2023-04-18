@@ -27,6 +27,7 @@ public class SqlGenerator {
     ArrayList<String> randomSqls;
     public SqlGenerator(String dsn){
         this.dsn = dsn;
+        this.randomSqls= new ArrayList<>();  /* 初始化一个存值的 arr */
     }
     public boolean connectDB() {
         try{
@@ -80,7 +81,7 @@ public class SqlGenerator {
                 if(cnt[0] == queryNum){
                     return false;
                 }
-                return false;
+                return true;
             }
         };
     }
@@ -101,6 +102,8 @@ public class SqlGenerator {
             }
         },queryNum));
         return this.randomSqls;
+        /* 为什么生成的sql 只有一段，而不是我们句子中的两句
+        * 猜想:是分隔符；导致了提前的结束 */
 
 
     }

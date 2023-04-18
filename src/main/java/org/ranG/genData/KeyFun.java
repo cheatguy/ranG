@@ -99,6 +99,7 @@ public class KeyFun {
                 return null;
             }else{
                 RetStrBool ret  = new RetStrBool(res,true);
+                return ret;
             }
         }
         return new RetStrBool("",false );
