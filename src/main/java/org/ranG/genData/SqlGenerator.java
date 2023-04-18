@@ -153,6 +153,11 @@ public class SqlGenerator {
         ArrayList<String> randSqls = new ArrayList<>();
         randSqls = getRandSqls(keyF);
         System.out.println("gensql succeess");
+        System.out.println("the size of sql is "+ randSqls.size());
+        for(int i =0 ;i<10 ;i++){
+            System.out.println(randSqls.get(i));
+            System.out.println("------------------------\n\n");
+        }
 
 
     }
