@@ -111,7 +111,7 @@ public class SqlGenerator {
         Logger log = LoggerUtil.getLogger();
         try{
             DatabaseMetaData metaData = conn.getMetaData();
-            ResultSet rs = metaData.getTables(null, null, null, new String[]{"TABLE"});
+            ResultSet rs = metaData.getTables(null, null, "%", new String[]{"TABLE"});
             ArrayList<Tables.TableStmt> tableStmts = new ArrayList<>();
             ArrayList<Fields.FieldExec> fieldExecs = new ArrayList<>();
             while(rs.next()){
@@ -119,6 +119,11 @@ public class SqlGenerator {
                 Tables tb = new Tables();
                 Tables.TableStmt tmp = tb.new TableStmt();
                 tmp.name = tableName;
+                /* skip the sys_config  table,( not  visible for user */
+                if( tmp.name.equals("sys_config")){
+                    continue;
+                }
+
                 tableStmts.add(tmp);
             }
             if(tableStmts.size() < 0){
@@ -152,11 +157,24 @@ public class SqlGenerator {
         KeyFun keyF = byDb();
         ArrayList<String> randSqls = new ArrayList<>();
         randSqls = getRandSqls(keyF);
-        System.out.println("gensql succeess");
-        System.out.println("the size of sql is "+ randSqls.size());
-        for(int i =0 ;i<10 ;i++){
-            System.out.println(randSqls.get(i));
-            System.out.println("------------------------\n\n");
+//        System.out.println("gensql succeess");
+//        System.out.println("the size of sql is "+ randSqls.size());
+//        for(int i =0 ;i<10 ;i++){
+//            System.out.println(randSqls.get(i));
+//            System.out.println("------------------------\n\n");
+//        }
+        /* exec these sql */
+        System.out.println("gensql : start exec-----------------");
+        try{
+            Statement statement = conn.createStatement();
+            int cnt = 0;
+            for (String sql:randSqls){
+                System.out.println("exec "+ cnt++ );
+                System.out.println(sql);
+                ResultSet resultSet =  statement.executeQuery(sql);
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
         }
 
 
