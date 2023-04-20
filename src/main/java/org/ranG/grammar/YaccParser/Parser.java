@@ -29,6 +29,7 @@ public class Parser {
         Token lastTerm = null;
         int state = initState;
         /* 收集一些lua脚本代码执行，是头部代码块 */
+        /* error: 这里没有正确的skip掉 comment*/
         CodeBlockRet ret = collectHeadCodeBlocks(tk);
         if(ret == null){
             log.error("parseInside: get headCodeBlock fail");

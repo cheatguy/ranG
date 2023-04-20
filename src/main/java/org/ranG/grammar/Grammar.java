@@ -94,6 +94,7 @@ public class Grammar {
         Parser parser = new Parser();
         Tokener tkner = new Tokener(reader);
         ParseRet ret = parser.parseInside(tkner);  /* 内部使用tokener实现的的func接口 */
+        /* ret 的 pds 就是包含的bnf 块，每个数组中的元素就可以被展开 */
         if(ret == null){
             log.error("Grammar : parseInside error");
             return null;

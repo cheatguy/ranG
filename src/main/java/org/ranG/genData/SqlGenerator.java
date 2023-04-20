@@ -169,7 +169,7 @@ public class SqlGenerator {
             Statement statement = conn.createStatement();
             int cnt = 0;
             for (String sql:randSqls){
-                System.out.println("exec "+ cnt++ );
+                System.out.println("---------------------");
                 System.out.println(sql);
                 ResultSet resultSet =  statement.executeQuery(sql);
             }

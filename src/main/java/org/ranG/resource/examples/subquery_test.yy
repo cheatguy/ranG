@@ -1,7 +1,3 @@
-/* innerjoin sub query and update sub query
-./go-randgen gentest -Y examples/subquery_test.yy --maxrecur 30
-*/
-
 query:
     BEGIN ; update ; ROLLBACK | select
 

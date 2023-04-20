@@ -101,7 +101,11 @@ public class Tokener implements IToken{
                                 }else{
                                     state = inTerminal;
                                 }
-                                break;
+                                /*
+                                 bug point： 这里的switch 中的break 会导致 /* comment无法解析，直接退出
+                                 这里default它自己会退出，再次使用break跳出是外层循环
+                                 */
+                                //break;
                             }
                         }
 
