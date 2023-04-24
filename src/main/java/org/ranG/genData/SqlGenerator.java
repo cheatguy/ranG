@@ -89,7 +89,7 @@ public class SqlGenerator {
     public ArrayList<String> getRandSqls(KeyFun keyf){
         this.randomSqls= new ArrayList<>();
 
-        /* break point */
+        /* pos——neg 解析不出来*/
         SQLIterator sqlIter = getIter(keyf);
 
         /*todo 存在问题 */
@@ -171,7 +171,7 @@ public class SqlGenerator {
             for (String sql:randSqls){
                 System.out.println("---------------------");
                 System.out.println(sql);
-                ResultSet resultSet =  statement.executeQuery(sql);
+//                ResultSet resultSet =  statement.executeQuery(sql);
             }
         } catch (SQLException e){
             e.printStackTrace();

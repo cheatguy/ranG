@@ -10,11 +10,11 @@ public class Main {
     public static String zzPath = "D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\default.zz.lua";
 //    public static String zzPath = "D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\test.lua";
     public static  int queryNum = 5;
-    public static String yyPath ="D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\examples\\subquery_test.yy";
+    public static String yyPath ="D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\examples\\interval.yy";
 //    public static String yyPath ="D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\examples\\toturial\\subquery.yy";
     public static boolean debug = false;
     public static String root = "query";  /* root bnf expression to generate sql */
-    public static  int maxRecursive = 5;
+    public static  int maxRecursive = 1;
     public static void main(String[] args) {
 
             Logger log = LoggerUtil.getLogger();

@@ -46,7 +46,8 @@ public class Grammar {
 
     public static boolean tknEnd(RuneSeq reader,char r){
         /* need addition judge for special newline*/
-        return r=='\n' ||Character.isSpaceChar(r) || r == '|' || specialRune.containsKey(r) || r == '#' || r == '{' || (r ==':' && !reader.peekEqual('=')) || (r =='/' && reader.peekEqual('*'));
+//        return r=='\n' ||Character.isSpaceChar(r) || r == '|' || specialRune.containsKey(r) || r == '#' || r == '{' || (r ==':' && !reader.peekEqual('=')) || (r =='/' && reader.peekEqual('*'));
+        return Character.isWhitespace(r) || r == '|' || specialRune.containsKey(r) || r == '#' || r == '{' || (r ==':' && !reader.peekEqual('=')) || (r =='/' && reader.peekEqual('*'));
     }
 
     int runeInitState(char c){

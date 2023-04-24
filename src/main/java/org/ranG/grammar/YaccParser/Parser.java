@@ -45,6 +45,7 @@ public class Parser {
         /* initState -> delimFetchedState -> termFetchedState ->... */
         while(state != endState){
             tkn = skipComment(tk);
+
             if(tkn == null){
                 log.error("parseInside: not reach end state");
                 return null;
@@ -92,7 +93,7 @@ public class Parser {
                             s = new Seq(null);
                         }
                         if(tkn.originString().equals(":")){
-                            /* not sure, may be buged */
+                            /* 这里解析存在一点问题，BNF中有|后面为空的式子会解析不到下一个bnf的头 */
                             Terminal t = new Terminal(null,"");
                             s = new Seq(new ArrayList<>());
                             s.items.add(t);
@@ -126,7 +127,7 @@ public class Parser {
                             p.AppendSeq(s);
                             s = new Seq(null);
                             prods.add(p);
-                            if(! isTknNonTerminal(lastTerm)){
+                            if(!isTknNonTerminal(lastTerm)){
                                 log.error("parseInside: the char is not a nonterminal");
                                 return null;
                             }

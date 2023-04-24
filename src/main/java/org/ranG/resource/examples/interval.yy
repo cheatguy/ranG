@@ -1,10 +1,3 @@
-/*
-interval expr test
-
-not use _table or _fields, use set --skip-zz may be better
-
- */
-
 query:
     SELECT date_val AS dtest
 
@@ -45,7 +38,6 @@ unit:
     | DAY
     | WEEK
     | MONTH
-    | QUARTER
     | YEAR
     | SECOND_MICROSECOND
     | MINUTE_MICROSECOND
@@ -59,13 +51,9 @@ unit:
     | DAY_HOUR
     | YEAR_MONTH
 
-# 负号 或空
-flag:
-    -|
+flag: -
+pos_neg:-|+
 
-# 正负号
-pos_neg:
-    -|+
 
 interval_expr:
-    pos_neg inter interval_expr |
+    pos_neg inter interval_expr

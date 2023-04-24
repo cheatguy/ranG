@@ -179,6 +179,9 @@ public class SQLRandomlyIterator implements SQLIterator {
                         continue;
                     }
                 }
+                /* 处理 subquery中的a._fieldchar 中，它只解析出了一个 a（item）
+                    causing error
+                 */
 
                 if(handlePreSpace(firstWrite,parentPreSpace,item,sqlBuffer) < 0){
                     return new RetgenerateSQL(!firstWrite,"handle space err");

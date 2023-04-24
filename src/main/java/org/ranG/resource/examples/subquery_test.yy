@@ -19,7 +19,7 @@ select_all:
 select_char:
     SELECT _field_char FROM (select_char) inner_join
     WHERE _field_char in (select_char)
-    | SELECT a._field_char FROM (SELECT * FROM _table) a
+    | SELECT _field_char FROM (SELECT * FROM _table)
     | SELECT _field_char FROM _table
 
 where:
