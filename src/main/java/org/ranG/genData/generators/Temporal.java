@@ -1,5 +1,7 @@
 package org.ranG.genData.generators;
 
+import java.util.ArrayList;
+
 public class Temporal implements Generator {
     int from;
     int to;
@@ -10,6 +12,14 @@ public class Temporal implements Generator {
     final static int mm = 4;
     final static int ss = 5;
     final static int SSS = 6;
+    class GenAndPrefix{
+        Generator gen;
+        String prefix;
+    }
+    static ArrayList<GenAndPrefix>tplComponents = new ArrayList<>();
+//    static{
+//        tplComponents.add(new Int(2000,2023,"%.4d"));
+//    }
 
     public Temporal(int from,int to){
         this.from = from;
@@ -18,6 +28,8 @@ public class Temporal implements Generator {
 
     @Override
     public String gen() {
+        StringBuilder sb = new StringBuilder();
+//        sb.append()
         return "";
     }
 }

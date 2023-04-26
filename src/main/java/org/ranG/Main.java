@@ -12,7 +12,7 @@ public class Main {
     public static String zzPath = "D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\default.zz.lua";
 //    public static String zzPath = "D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\test.lua";
     public static  int queryNum = 5;
-    public static String yyPath ="D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\examples\\interval.yy";
+    public static String yyPath ="D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\examples\\toturial\\test_update.yy";
 //    public static String yyPath ="D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\examples\\toturial\\subquery.yy";
     public static boolean debug = false;
     public static String root = "query";  /* root bnf expression to generate sql */
@@ -36,21 +36,21 @@ public class Main {
 
             /* create table and insert the data */
 
-//            if (cl.hasOption("genData")){
-//                // -genData jdbc:mysql://localhost:3306/cpy
-//                String dsns = cl.getOptionValue("genData");
-//                DdlGenerator generator = new DdlGenerator();
-//                generator.setDsn(dsns);
-//                generator.act();
-//
-//            }else if (cl.hasOption("genSql")){
-//                // -genSql jdbc:mysql://localhost:3306/cpy
-//                String dsn = cl.getOptionValue("genSql");
-//                SqlGenerator generator = new SqlGenerator(dsn);
-//                generator.act();
-//            }else {
-//                System.out.println("not found");
-//            }
+            if (cl.hasOption("genData")){
+                // -genData jdbc:mysql://localhost:3306/cpy
+                String dsns = cl.getOptionValue("genData");
+                DdlGenerator generator = new DdlGenerator();
+                generator.setDsn(dsns);
+                generator.act();
+
+            }else if (cl.hasOption("genSql")){
+                // -genSql jdbc:mysql://localhost:3306/cpy
+                String dsn = cl.getOptionValue("genSql");
+                SqlGenerator generator = new SqlGenerator(dsn);
+                generator.act();
+            }else {
+                System.out.println("not found");
+            }
         } catch ( ParseException e){
             e.printStackTrace();
         }

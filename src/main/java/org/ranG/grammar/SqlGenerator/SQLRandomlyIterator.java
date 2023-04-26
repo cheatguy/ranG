@@ -269,6 +269,20 @@ public class SQLRandomlyIterator implements SQLIterator {
 
         }
     }
+    static class MyPrint extends VarArgFunction {
+        StringBuilder sb = new StringBuilder();
+        MyPrint(StringBuilder sb){
+            this.sb = sb;
+        }
+        @Override
+        public Varargs invoke(Varargs args) {
+            /* 获取第一个参数 */
+            String name = args.tojstring(1);
+            this.sb.append(name);
+            /*返回值为空*/
+            return LuaValue.valueOf(0);
+        }
+    }
     public  SQLIterator generateSQL(ArrayList<CodeBlock> headCodeBlocks,HashMap<String,Production> productionMap,KeyFun keyfunc,String productionName,int maxRecursive){
         Globals l = JsePlatform.standardGlobals();
         registerKeyFun(l,keyfunc);
@@ -281,11 +295,9 @@ public class SQLRandomlyIterator implements SQLIterator {
 
 
         StringBuilder pBuf = new StringBuilder();
+        MyPrint mp = new MyPrint(pBuf);
 
-        // cover origin lua print
-        //todo 这部分我暂时忽略了Lua中print的设置
-//        MyJavaObject javaFunction = new MyJavaObject();
-//        l.set("print", javaFunction);
+        l.set("print",mp);
 
         return new SQLRandomlyIterator(productionName,productionMap,keyfunc,l,pBuf,maxRecursive,new PathInfo());
 
