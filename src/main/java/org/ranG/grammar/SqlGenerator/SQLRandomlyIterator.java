@@ -2,7 +2,9 @@ package org.ranG.grammar.SqlGenerator;
 
 import org.apache.logging.log4j.Logger;
 import org.luaj.vm2.Globals;
+import org.luaj.vm2.*;
 import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.lib.VarArgFunction;
 import org.luaj.vm2.lib.jse.JsePlatform;
 import org.ranG.genData.IFunc;
 import org.ranG.genData.KeyFun;
@@ -214,7 +216,7 @@ public class SQLRandomlyIterator implements SQLIterator {
                 // lua code block
                 //这originString掐头去尾
                 String luaStr = item.originString().substring(1,item.originString().length() - 1);
-                this.globals.load(luaStr).call();
+                this.globals.load(luaStr).call(); /*执行这段lua ，可行*/
                 if(this.printBuf.toString().length() > 0 ){
                     sqlBuffer.append(this.printBuf.toString());
                     this.printBuf.setLength(0);
@@ -246,24 +248,38 @@ public class SQLRandomlyIterator implements SQLIterator {
         return new RetgenerateSQL(!firstWrite,"");
     }
     // 一个内部类，用于专门给lua函数调用
-
+    static class MyFunction extends VarArgFunction {
+        String str;
+        @Override
+        public Varargs invoke(Varargs args) {
+//            String name = args.tojstring(1);
+            return LuaValue.valueOf(str);
+        }
+    }
     /*这里没有注册 */
     void registerKeyFun(Globals l,KeyFun keyfunc){
 
         for(Map.Entry<String, IFunc> entry : keyfunc.funcMap.entrySet()){
             String funName = entry.getKey();
             IFunc function = entry.getValue();
+            /*call func */
+            MyFunction fc = new MyFunction();
+            fc.str = function.func();
+            l.set(funName,fc);
+
         }
-
-
     }
     public  SQLIterator generateSQL(ArrayList<CodeBlock> headCodeBlocks,HashMap<String,Production> productionMap,KeyFun keyfunc,String productionName,int maxRecursive){
         Globals l = JsePlatform.standardGlobals();
         registerKeyFun(l,keyfunc);
-        /* run head code block */
+        /* run head code block ,需要去掉{}，所以index 1到size-1*/
         for(CodeBlock  codeblcok:headCodeBlocks){
             String luaStr = codeblcok.originString().substring( 1 ,codeblcok.originString().length() - 1);
+            LuaValue chunk = LuaValue.valueOf(luaStr);
+            chunk.call(l);
         }
+
+
         StringBuilder pBuf = new StringBuilder();
 
         // cover origin lua print

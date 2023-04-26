@@ -1,5 +1,7 @@
 package org.ranG;
 
+import org.luaj.vm2.Globals;
+import org.luaj.vm2.lib.jse.JsePlatform;
 import org.ranG.genData.*;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
@@ -31,22 +33,24 @@ public class Main {
             log.info("after the command line parsing");
             BasicParser parser = new BasicParser();
             CommandLine cl = parser.parse(options, args);
-            /* create table and insert the data */
-            if (cl.hasOption("genData")){
-                // -genData jdbc:mysql://localhost:3306/cpy
-                String dsns = cl.getOptionValue("genData");
-                DdlGenerator generator = new DdlGenerator();
-                generator.setDsn(dsns);
-                generator.act();
 
-            }else if (cl.hasOption("genSql")){
-                // -genSql jdbc:mysql://localhost:3306/cpy
-                String dsn = cl.getOptionValue("genSql");
-                SqlGenerator generator = new SqlGenerator(dsn);
-                generator.act();
-            }else {
-                System.out.println("not found");
-            }
+            /* create table and insert the data */
+
+//            if (cl.hasOption("genData")){
+//                // -genData jdbc:mysql://localhost:3306/cpy
+//                String dsns = cl.getOptionValue("genData");
+//                DdlGenerator generator = new DdlGenerator();
+//                generator.setDsn(dsns);
+//                generator.act();
+//
+//            }else if (cl.hasOption("genSql")){
+//                // -genSql jdbc:mysql://localhost:3306/cpy
+//                String dsn = cl.getOptionValue("genSql");
+//                SqlGenerator generator = new SqlGenerator(dsn);
+//                generator.act();
+//            }else {
+//                System.out.println("not found");
+//            }
         } catch ( ParseException e){
             e.printStackTrace();
         }
