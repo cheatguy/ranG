@@ -15,21 +15,45 @@ public class Temporal implements Generator {
     class GenAndPrefix{
         Generator gen;
         String prefix;
+        GenAndPrefix(Generator gen,String prefix){
+            this.gen = gen;
+            this.prefix = prefix;
+        }
     }
     static ArrayList<GenAndPrefix>tplComponents = new ArrayList<>();
-//    static{
-//        tplComponents.add(new Int(2000,2023,"%.4d"));
-//    }
+
+
+
 
     public Temporal(int from,int to){
         this.from = from;
         this.to   = to;
+        /* init the array */
+        /*year */
+        tplComponents.add(new GenAndPrefix(new Int(2000,2023,"%.4d"),""));
+        /*month*/
+        tplComponents.add(new GenAndPrefix(new Int(1,12,"%.2d"),"-"));
+        /* day*/
+        tplComponents.add(new GenAndPrefix(new Int(1,28,"%.2d"),"-"));
+        /*hour */
+        tplComponents.add(new GenAndPrefix(new Int(0,23,"%.2d")," "));
+        /*minute*/
+        tplComponents.add(new GenAndPrefix(new Int(0,59,"%.2d"),":"));
+        /* second*/
+        tplComponents.add(new GenAndPrefix(new Int(0,59,"%.2d"),":"));
+        /* micro second */
+        tplComponents.add(new GenAndPrefix(new Int(0,999999,""),"."));
+
     }
 
     @Override
     public String gen() {
         StringBuilder sb = new StringBuilder();
-//        sb.append()
-        return "";
+        sb.append(tplComponents.get(this.from).gen.gen());
+        for(int i=this.from+1 ;i<=this.to;i++){
+            GenAndPrefix genpre = tplComponents.get(i);
+            sb.append(genpre.prefix+ genpre.gen.gen());
+        }
+        return "'" + sb.toString() + "'";
     }
 }

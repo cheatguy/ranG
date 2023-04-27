@@ -279,13 +279,14 @@ public class SQLRandomlyIterator implements SQLIterator {
             /* 获取第一个参数 */
             String name = args.tojstring(1);
             this.sb.append(name);
-            /*返回值为空*/
-            return LuaValue.valueOf(0);
+            /*返回值为LuaValue空*/
+            return NIL;
         }
     }
     public  SQLIterator generateSQL(ArrayList<CodeBlock> headCodeBlocks,HashMap<String,Production> productionMap,KeyFun keyfunc,String productionName,int maxRecursive){
         Globals l = JsePlatform.standardGlobals();
-        registerKeyFun(l,keyfunc);
+        /* warn： ignore it ,but for debuging */
+//        registerKeyFun(l,keyfunc);
         /* run head code block ,需要去掉{}，所以index 1到size-1*/
         for(CodeBlock  codeblcok:headCodeBlocks){
             String luaStr = codeblcok.originString().substring( 1 ,codeblcok.originString().length() - 1);

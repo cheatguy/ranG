@@ -18,7 +18,6 @@ public class Char implements Generator{
         for(int i=0;i<this.length;i++){
             sb.append(s.substring(random.nextInt(s.length()),random.nextInt(s.length())+1));
         }
-
         return  String.format("\"%s\"",sb.toString());
 
     }

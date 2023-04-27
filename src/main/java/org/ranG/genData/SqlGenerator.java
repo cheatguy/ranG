@@ -71,7 +71,7 @@ public class SqlGenerator {
     SQLVisitor fixedTimesVisitor(IFixedTimesVisitor ifunc,int queryNum){
         final int[] cnt = {0};
         /*希望在匿名内中修改cnt的值 */
-        /* todo :这里这个计数器有问题*/
+
         return  new SQLVisitor() {
 
             @Override
@@ -92,9 +92,7 @@ public class SqlGenerator {
         /* pos——neg 解析不出来*/
         SQLIterator sqlIter = getIter(keyf);
 
-        /*todo 存在问题 */
-        //这里相当于一个计数器，生成 times 个的sql语句
-        //目前就生成一条
+
         sqlIter.visit(fixedTimesVisitor( new IFixedTimesVisitor() {
             @Override
             public void func(int i, String sql) {
@@ -169,6 +167,11 @@ public class SqlGenerator {
             }
         } catch (SQLException e){
             e.printStackTrace();
+            //非期望 ，错误分析。。。
+            //！非预期错误——>sqlancer
+            //工具完整。。
+            //
+            // design data chapter 4
         }
 
 
