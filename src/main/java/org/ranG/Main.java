@@ -16,7 +16,7 @@ public class Main {
     public static String yyPath ="D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\examples\\toturial\\subquery.yy";
     public static boolean debug = false;
     public static String root = "query";  /* root bnf expression to generate sql */
-    public static  int maxRecursive = 1;
+    public static  int maxRecursive = 5;
     public static void main(String[] args) {
 
             Logger log = LoggerUtil.getLogger();
@@ -48,6 +48,8 @@ public class Main {
                 String dsn = cl.getOptionValue("genSql");
                 SqlGenerator generator = new SqlGenerator(dsn);
                 generator.act();
+            }else if(cl.hasOption("fullTest")){
+                /* 完整的测试流程 */
             }else {
                 System.out.println("not found");
             }

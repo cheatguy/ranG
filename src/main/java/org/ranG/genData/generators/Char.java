@@ -16,7 +16,7 @@ public class Char implements Generator{
     public String gen() {
         Random random = new Random();
         for(int i=0;i<this.length;i++){
-            sb.append(s.substring(random.nextInt(s.length()),random.nextInt(s.length())+1));
+            sb.append(s.charAt(random.nextInt(s.length())));
         }
         return  String.format("\"%s\"",sb.toString());
 

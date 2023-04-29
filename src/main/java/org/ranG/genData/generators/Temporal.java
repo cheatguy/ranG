@@ -20,7 +20,7 @@ public class Temporal implements Generator {
             this.prefix = prefix;
         }
     }
-    static ArrayList<GenAndPrefix>tplComponents = new ArrayList<>();
+    ArrayList<GenAndPrefix>tplComponents = new ArrayList<>();
 
 
 
@@ -30,17 +30,17 @@ public class Temporal implements Generator {
         this.to   = to;
         /* init the array */
         /*year */
-        tplComponents.add(new GenAndPrefix(new Int(2000,2023,"%.4d"),""));
+        tplComponents.add(new GenAndPrefix(new Int(2000,2023,"%04d"),""));
         /*month*/
-        tplComponents.add(new GenAndPrefix(new Int(1,12,"%.2d"),"-"));
+        tplComponents.add(new GenAndPrefix(new Int(1,12,"%02d"),"-"));
         /* day*/
-        tplComponents.add(new GenAndPrefix(new Int(1,28,"%.2d"),"-"));
+        tplComponents.add(new GenAndPrefix(new Int(1,28,"%02d"),"-"));
         /*hour */
-        tplComponents.add(new GenAndPrefix(new Int(0,23,"%.2d")," "));
+        tplComponents.add(new GenAndPrefix(new Int(0,23,"%02d")," "));
         /*minute*/
-        tplComponents.add(new GenAndPrefix(new Int(0,59,"%.2d"),":"));
+        tplComponents.add(new GenAndPrefix(new Int(0,59,"%02d"),":"));
         /* second*/
-        tplComponents.add(new GenAndPrefix(new Int(0,59,"%.2d"),":"));
+        tplComponents.add(new GenAndPrefix(new Int(0,59,"%02d"),":"));
         /* micro second */
         tplComponents.add(new GenAndPrefix(new Int(0,999999,""),"."));
 
@@ -48,6 +48,7 @@ public class Temporal implements Generator {
 
     @Override
     public String gen() {
+        /* 2 5 */
         StringBuilder sb = new StringBuilder();
         sb.append(tplComponents.get(this.from).gen.gen());
         for(int i=this.from+1 ;i<=this.to;i++){

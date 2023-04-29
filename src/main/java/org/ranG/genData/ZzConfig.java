@@ -31,7 +31,7 @@ public class ZzConfig {
         /*
             row 一开始是有size的，但是没有具体数据，我们需要插入空穿来填充大小
             row 的size 会作为后面的比较条件
-        *  */
+        */
         ArrayList<String> row = new ArrayList<>();
         for(int i=0;i<tableStmts.arrFld.size();i++){
             row.add(""); /* add null string */

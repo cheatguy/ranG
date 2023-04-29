@@ -286,7 +286,7 @@ public class SQLRandomlyIterator implements SQLIterator {
     public  SQLIterator generateSQL(ArrayList<CodeBlock> headCodeBlocks,HashMap<String,Production> productionMap,KeyFun keyfunc,String productionName,int maxRecursive){
         Globals l = JsePlatform.standardGlobals();
         /* warn： ignore it ,but for debuging */
-//        registerKeyFun(l,keyfunc);
+        registerKeyFun(l,keyfunc);
         /* run head code block ,需要去掉{}，所以index 1到size-1*/
         for(CodeBlock  codeblcok:headCodeBlocks){
             String luaStr = codeblcok.originString().substring( 1 ,codeblcok.originString().length() - 1);
