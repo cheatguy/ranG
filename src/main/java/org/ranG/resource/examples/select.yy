@@ -1,7 +1,7 @@
 {i = 1}
 
 query:
-    create | select | drop
+    create |  drop | select
 
 create:
     CREATE TABLE {print(string.format("table%d", i)); i = i+1}  (a int)

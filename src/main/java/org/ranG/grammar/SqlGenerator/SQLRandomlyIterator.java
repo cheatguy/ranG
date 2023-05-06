@@ -197,6 +197,7 @@ public class SQLRandomlyIterator implements SQLIterator {
                     return new RetgenerateSQL(!firstWrite,"handle preSpace err");
                 }
                 /* keyword parse */
+                /* warn: field char not gen */
                 RetStrBool ret = this.keyFun.gen(item.originString());
                 if(ret == null){
                     return new RetgenerateSQL(!firstWrite,"fail to gen ");
@@ -235,7 +236,7 @@ public class SQLRandomlyIterator implements SQLIterator {
 
                 if(firstWrite && hasSubWrite.bo){
                     firstWrite = false;
-                }
+                } //!!!
                 if(hasSubWrite.error !=""){
                     return new RetgenerateSQL(!firstWrite,hasSubWrite.error);
                 }

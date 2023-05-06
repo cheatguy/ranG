@@ -20,14 +20,15 @@ import static org.ranG.Main.*;
 
 public class SqlGenerator {
     String dsn;
-    int queryNum = 100;
+    int queryNum = 1000;
     static Logger log = LoggerUtil.getLogger();
     Map<String, Function<String, String>> functionMap = new HashMap<>();
     static Connection conn;
     ArrayList<String> randomSqls;
-    public SqlGenerator(String dsn){
+    public SqlGenerator(String dsn,int queryNum){
         this.dsn = dsn;
         this.randomSqls= new ArrayList<>();  /* 初始化一个存值的 arr */
+        this.queryNum = queryNum;
     }
     public boolean connectDB() {
         try{
@@ -128,17 +129,33 @@ public class SqlGenerator {
                 log.error("sqlGenerator act: tableStatement size < 0");
             }
             /* get the column info，just focus on first tb */
-            rs = metaData.getColumns(null, null, tableStmts.get(0).name, null);
-            while(rs.next()){
-                String fieldName,fieldType;
-                fieldName = rs.getString("COLUMN_NAME");
-                fieldType = rs.getString("TYPE_NAME");
-                Fields fd = new Fields();
-                Fields.FieldExec tmp = fd.new FieldExec();
-                tmp.name = fieldName;
-                tmp.tp   = fieldType;
-                fieldExecs.add(tmp);
+            /*寻找一个非简单table */
+
+
+            for(int i=0;i<tableStmts.size();i++){
+                rs = metaData.getColumns(null, null, tableStmts.get(i).name, null);
+                int cnt = 0;
+                while(rs.next()) {
+                    cnt++;
+                }
+                if(cnt >3){
+
+                    rs = metaData.getColumns(null, null, tableStmts.get(i).name, null);
+                    while(rs.next()){
+                        String fieldName,fieldType;
+                        fieldName = rs.getString("COLUMN_NAME");
+                        fieldType = rs.getString("TYPE_NAME");
+                        Fields fd = new Fields();
+                        Fields.FieldExec tmp = fd.new FieldExec();
+                        tmp.name = fieldName;
+                        tmp.tp   = fieldType;
+                        fieldExecs.add(tmp);
+                    }
+                    break;
+                }
+
             }
+
             return new KeyFun(tableStmts,fieldExecs);
 
         } catch (SQLException e) {
@@ -157,23 +174,37 @@ public class SqlGenerator {
         randSqls = getRandSqls(keyF);
         /* exec these sql */
         System.out.println("gensql : start exec-----------------");
-        try{
-            Statement statement = conn.createStatement();
-            int cnt = 0;
-            for (String sql:randSqls){
-                System.out.println("---------------------");
-                System.out.println(sql);
+//        try{
+//            Statement statement = conn.createStatement();
+//            int cnt = 0;
+//            for (String sql:randSqls){
+//                System.out.println("---------------------");
+//                System.out.println(sql);
 //                ResultSet resultSet =  statement.executeQuery(sql);
-            }
-        } catch (SQLException e){
-            e.printStackTrace();
-            //非期望 ，错误分析。。。
-            //！非预期错误——>sqlancer
-            //工具完整。。
-            //
-            // design data chapter 4
-        }
+//            }
+//        } catch (SQLException e){
+//            e.printStackTrace();
+//            //非期望 ，错误分析。。。
+//            //！非预期错误——>sqlancer
+//            //工具完整。。
+//            //
+//            // design data chapter 4
+//        }
+//
 
+        for (String sql:randSqls){
+
+            System.out.println(sql);
+            System.out.println("---------------------");
+            try{
+
+                Statement statement = conn.createStatement();
+                statement.execute(sql);
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+
+        }
 
     }
 }
