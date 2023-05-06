@@ -290,7 +290,7 @@ public class SQLRandomlyIterator implements SQLIterator {
         /* run head code block ,需要去掉{}，所以index 1到size-1*/
         for(CodeBlock  codeblcok:headCodeBlocks){
             String luaStr = codeblcok.originString().substring( 1 ,codeblcok.originString().length() - 1);
-            LuaValue chunk = LuaValue.valueOf(luaStr);
+            LuaValue chunk = l.load(luaStr);
             chunk.call(l);
         }
 
