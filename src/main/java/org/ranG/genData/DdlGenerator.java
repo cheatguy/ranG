@@ -20,6 +20,19 @@ public class DdlGenerator {
     public void setDsn(String dsn){
         this.dsn = dsn;
     }
+    SQLType t;
+    enum SQLType {
+        MYSQL,
+        MARIADB,
+        ALL
+    }
+    public void setType(String dbName){
+        if(dbName.equals("MYSQL")){
+            t = SQLType.MYSQL;
+        }else if(dbName.equals("ALL")){
+            t = SQLType.ALL;
+        }
+    }
 
     /*
         read lua zz file
@@ -58,23 +71,33 @@ public class DdlGenerator {
         /* return : sql string[] ,keyFunc */
         Logger log = LoggerUtil.getLogger();
         ConfigRet dlls = getDdl();
-        try{
-            Connection conn = DriverManager.getConnection(this.dsn, "root", "jk123j@!?2<d");
-            log.info("connect to sql success");
-            Statement stmt = conn.createStatement();
-            for(String sql:dlls.ddls){
-                stmt.executeUpdate(sql);
+        if(this.t == SQLType.MYSQL){
+            try{
+                Connection conn = DriverManager.getConnection(this.dsn, "root", "jk123j@!?2<d");
+                log.info("connect to sql success");
+                Statement stmt = conn.createStatement();
+                for(String sql:dlls.ddls){
+                    stmt.executeUpdate(sql);
+                }
+
+            }catch (SQLException e) {
+                log.error("sql exception");
+                throw new RuntimeException(e);
             }
 
-            /* for query */
-//            ResultSet rs = stmt.executeQuery("SELECT * from table_90_utf8_undef");
-//            while(rs.next()){
-//                System.out.println("the varchar "+rs.getArray("col_enum_undef_signed"));
-//            }
+        }else{
+            /* MariaDB */
+            System.out.println("this is mariaDB");
+            try{
 
-        }catch (SQLException e) {
-            log.error("sql exception");
-            throw new RuntimeException(e);
+                Connection conn = DriverManager.getConnection(this.dsn, "root", "nkl213HJKS&#HG*");
+                Statement stmt = conn.createStatement();
+                for(String sql:dlls.ddls){
+//                    stmt.executeUpdate(sql);
+                }
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
         }
 
     }

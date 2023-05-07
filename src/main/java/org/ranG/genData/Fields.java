@@ -81,13 +81,15 @@ public class Fields  {
         datas = new HashMap<>();
         fields = new ArrayList<>();
         pos = new ArrayList<>();
-        tmpl = new ST("`<fname>` <types> <sign> <keys>");
+//        tmpl = new ST("`<fname>` <types> <sign> <keys>");
+        tmpl = new ST("\"<fname>\" <types> <sign> <keys>");
     }
     Fields( String option, LuaValue lValue){
         datas = new HashMap<>();
         fields = new ArrayList<>();
         pos = new ArrayList<>();
-        tmpl = new ST("`<fname>` <types> <sign> <keys>");
+//        tmpl = new ST("`<fname>` <types> <sign> <keys>");
+        tmpl = new ST("\"<fname>\" <types> <sign> <keys>");
         /* tableVar : name String, default String[] */
         for(VarWithDefault var : fieldVars){
             LuaParser parser = new LuaParser();
@@ -130,6 +132,7 @@ public class Fields  {
     public String format(HashMap<String,String> vals){
         Iterator<Map.Entry<String,String>> it = vals.entrySet().iterator();
         ST tmp = new ST("`<fname>` <types> <sign> <keys>");
+//        ST tmp = new ST("\"<fname>\" <types> <sign> <keys>");
         while(it.hasNext()){
             Map.Entry<String, String> entry = it.next();
             tmp.add(entry.getKey(),entry.getValue());

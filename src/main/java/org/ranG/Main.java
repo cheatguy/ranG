@@ -11,9 +11,9 @@ import org.apache.logging.log4j.Logger;
 public class Main {
 //    public static String zzPath = "D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\default.zz.lua";
     public static String zzPath = "D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\type_1.zz.lua";
-    public static  int queryNum = 5;
-    public static String yyPath ="D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\examples\\select.yy";
-//    public static String yyPath ="D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\examples\\toturial\\create_unique_table.yy";
+    public static  int queryNum = 1000;
+//    public static String yyPath ="D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\examples\\select.yy";
+    public static String yyPath ="D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\examples\\diff.yy";
     public static boolean debug = false;
     public static String root = "query";  /* root bnf expression to generate sql */
     public static  int maxRecursive = 5;
@@ -30,9 +30,13 @@ public class Main {
             Option genTable = new Option("g2","genSql",true,"generate sql statement based on table structure");
 
             Option fullTest = new Option("g3","fullTest",true,"gen table,insert data and select");
+
+            Option diffTest = new Option("g4","diffTest",true,"differential testing ");
+
             options.addOption(genData);
             options.addOption(genTable);
             options.addOption(fullTest);
+            options.addOption(diffTest);
             log.info("after the command line parsing");
             BasicParser parser = new BasicParser();
             CommandLine cl = parser.parse(options, args);
@@ -41,12 +45,16 @@ public class Main {
 
             if (cl.hasOption("genData")){
                 // -genData jdbc:mysql://localhost:3306/cpy
+                // -genData jdbc:mariadb://localhost:3308/cpy
                 String dsns = cl.getOptionValue("genData");
                 DdlGenerator generator = new DdlGenerator();
                 generator.setDsn(dsns);
+                generator.setType("MARIADB");
                 generator.act();
 
+
             }else if (cl.hasOption("genSql")){
+                // -genSql jdbc:mysql://localhost:3306/cpy
                 // -genSql jdbc:mysql://localhost:3306/cpy
                 String dsn = cl.getOptionValue("genSql");
                 SqlGenerator generator = new SqlGenerator(dsn,100);
@@ -57,6 +65,13 @@ public class Main {
                 FullTestor generator = new FullTestor(dsn);
                 generator.act();
                 /* 完整的测试流程 */
+            }else if(cl.hasOption("diffTest")){
+                //-diffTest jdbc:mysql://localhost:3306/cpy;jdbc:mariadb://localhost:3308/cpy
+                String dsnList = cl.getOptionValue("diffTest");
+                String[] dns = dsnList.split(";");
+                DiffTestor diffTester = new DiffTestor(dns[0],dns[1],100);
+                diffTester.act();
+
             }else {
                 System.out.println("not found");
             }

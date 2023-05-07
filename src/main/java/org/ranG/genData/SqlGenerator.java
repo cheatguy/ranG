@@ -174,23 +174,6 @@ public class SqlGenerator {
         randSqls = getRandSqls(keyF);
         /* exec these sql */
         System.out.println("gensql : start exec-----------------");
-//        try{
-//            Statement statement = conn.createStatement();
-//            int cnt = 0;
-//            for (String sql:randSqls){
-//                System.out.println("---------------------");
-//                System.out.println(sql);
-//                ResultSet resultSet =  statement.executeQuery(sql);
-//            }
-//        } catch (SQLException e){
-//            e.printStackTrace();
-//            //非期望 ，错误分析。。。
-//            //！非预期错误——>sqlancer
-//            //工具完整。。
-//            //
-//            // design data chapter 4
-//        }
-//
 
         for (String sql:randSqls){
 

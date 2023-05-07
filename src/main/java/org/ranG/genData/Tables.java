@@ -73,14 +73,16 @@ public class Tables  {
         datas = new HashMap<>();
         fields = new ArrayList<>();
         pos = new ArrayList<>();
-
-        tmpl = new ST("create table <tname> (\n" + "`pk` int primary key <keys>%s\n" + ") <charsets> <partitions>" );
+//        tmpl = new ST("create table <tname> (\n" + "`pk` int primary key <keys>%s\n" + ") <charsets> <partitions>" );
+        tmpl = new ST("create table <tname> (\n" + "\"pk\" int primary key <keys>%s\n" + ") <charsets> <partitions>" );
     }
     public Tables(String option, LuaValue lValue){
         datas = new HashMap<>();
         fields = new ArrayList<>();
         pos = new ArrayList<>();
-        tmpl = new ST("create table <tname> (\n" + "`pk` int primary key <keys>%s\n" + ") <charsets> <partitions>" );
+//        tmpl = new ST("create table <tname> (\n" + "`pk` int primary key <keys>%s\n" + ") <charsets> <partitions>" );
+        tmpl = new ST("create table <tname> (\n" + "\"pk\" int primary key <keys>%s\n" + ") <charsets> <partitions>" );
+
 
         /* tableVar : name String, default String[] */
         for(VarWithDefault var : tableVars){
@@ -107,8 +109,9 @@ public class Tables  {
     public String format(HashMap<String,String> vals){
         /* map 中所有kv 进行一个替换 */
         Iterator<Map.Entry<String,String>> it = vals.entrySet().iterator();
-        /*每次要空 */
+        /*这个才是真正起作用的地方 */
         ST tmp = new ST("create table <tname> (\n" + "`pk` int primary key <keys>%s\n" + ") <charsets> <partitions>");
+//        ST tmp = new ST("create table <tname> (\n" + "\"pk\" int primary key <keys>%s\n" + ") <charsets> <partitions>");
         while(it.hasNext()){
             Map.Entry<String, String> entry = it.next();
             tmp.add(entry.getKey(),entry.getValue());

@@ -16,7 +16,6 @@ public class FullTestor {
     int queryNum = 1000;
     static Logger log = LoggerUtil.getLogger();
     Map<String, Function<String, String>> functionMap = new HashMap<>();
-    static Connection conn;
     ArrayList<String> randomSqls;
     public FullTestor(String dsn){
         this.dsn = dsn;
