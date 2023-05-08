@@ -34,14 +34,7 @@ public class DdlGenerator {
         }
     }
 
-    /*
-        read lua zz file
-        exec zz file
 
-        genDdlReturn contains:
-            String[] : sql
-            keyfunc
-     */
 
     public ConfigRet getDdl() {
 
@@ -85,7 +78,7 @@ public class DdlGenerator {
                 throw new RuntimeException(e);
             }
 
-        }else{
+        }else if (this.t == SQLType.MARIADB){
             /* MariaDB */
             System.out.println("this is mariaDB");
             try{
@@ -98,6 +91,20 @@ public class DdlGenerator {
             }catch(SQLException e){
                 e.printStackTrace();
             }
+        }else if(this.t ==SQLType.ALL){
+            try{
+                Connection connMaria = DriverManager.getConnection("jdbc:mariadb://localhost:3308/cpy", "root", "nkl213HJKS&#HG*");
+                Connection connMySQL = DriverManager.getConnection("jdbc:mysql://localhost:3306/cpy", "root", "jk123j@!?2<d");
+                Statement stmtMarai = connMaria.createStatement();
+                Statement stmtMySQL = connMySQL.createStatement();
+                for(String sql:dlls.ddls){
+                    stmtMarai.executeUpdate(sql);
+                    stmtMySQL.executeUpdate(sql);
+                }
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+
         }
 
     }

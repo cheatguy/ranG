@@ -49,7 +49,8 @@ public class Main {
                 String dsns = cl.getOptionValue("genData");
                 DdlGenerator generator = new DdlGenerator();
                 generator.setDsn(dsns);
-                generator.setType("MARIADB");
+                //MARIA MYSQL FULL
+                generator.setType("ALL");
                 generator.act();
 
 
@@ -69,7 +70,7 @@ public class Main {
                 //-diffTest jdbc:mysql://localhost:3306/cpy;jdbc:mariadb://localhost:3308/cpy
                 String dsnList = cl.getOptionValue("diffTest");
                 String[] dns = dsnList.split(";");
-                DiffTestor diffTester = new DiffTestor(dns[0],dns[1],100);
+                DiffTestor diffTester = new DiffTestor(dns[0],dns[1],500);
                 diffTester.act();
 
             }else {
