@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 public class Main {
 //    public static String zzPath = "D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\default.zz.lua";
     public static String zzPath = "D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\type_1.zz.lua";
-    public static  int queryNum = 1000;
+    public static  int queryNum = 2000;
 //    public static String yyPath ="D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\examples\\select.yy";
     public static String yyPath ="D:\\WorkSpace\\DB\\ranG\\src\\main\\java\\org\\ranG\\resource\\examples\\diff.yy";
     public static boolean debug = false;
@@ -50,7 +50,7 @@ public class Main {
                 DdlGenerator generator = new DdlGenerator();
                 generator.setDsn(dsns);
                 //MARIA MYSQL FULL
-                generator.setType("ALL");
+                generator.setType("MYSQL");
                 generator.act();
 
 
@@ -58,7 +58,7 @@ public class Main {
                 // -genSql jdbc:mysql://localhost:3306/cpy
                 // -genSql jdbc:mysql://localhost:3306/cpy
                 String dsn = cl.getOptionValue("genSql");
-                SqlGenerator generator = new SqlGenerator(dsn,100);
+                SqlGenerator generator = new SqlGenerator(dsn,2000);
                 generator.act();
             }else if(cl.hasOption("fullTest")){
                 // -fullTest jdbc:mysql://localhost:3306/cpy

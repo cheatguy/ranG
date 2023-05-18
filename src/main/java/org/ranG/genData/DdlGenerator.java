@@ -70,11 +70,14 @@ public class DdlGenerator {
                 log.info("connect to sql success");
                 Statement stmt = conn.createStatement();
                 for(String sql:dlls.ddls){
-                    stmt.executeUpdate(sql);
+//                    stmt.executeUpdate(sql);
+                    System.out.println(sql);
                 }
 
-            }catch (SQLException e) {
-                log.error("sql exception");
+            }catch (SQLSyntaxErrorException e){
+                log.info("[fuzz test] a SQL is not syntax correct  ");
+            } catch (SQLException e) {
+
                 throw new RuntimeException(e);
             }
 
@@ -86,10 +89,12 @@ public class DdlGenerator {
                 Connection conn = DriverManager.getConnection(this.dsn, "root", "nkl213HJKS&#HG*");
                 Statement stmt = conn.createStatement();
                 for(String sql:dlls.ddls){
-//                    stmt.executeUpdate(sql);
+                    stmt.executeUpdate(sql);
                 }
-            }catch(SQLException e){
-                e.printStackTrace();
+            }catch (SQLSyntaxErrorException e){
+                log.info("[fuzz test] a SQL is not syntax correct  ");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
         }else if(this.t ==SQLType.ALL){
             try{

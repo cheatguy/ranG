@@ -174,20 +174,28 @@ public class SqlGenerator {
         randSqls = getRandSqls(keyF);
         /* exec these sql */
         System.out.println("gensql : start exec-----------------");
-
+        int sqlCnt = 0;
+        int errorCnt =0;
         for (String sql:randSqls){
-
+            sqlCnt++;
             System.out.println(sql);
             System.out.println("---------------------");
             try{
 
                 Statement statement = conn.createStatement();
-                statement.execute(sql);
-            }catch (SQLException e){
-                e.printStackTrace();
+//                statement.execute(sql);
+                System.out.println(sql);
             }
-
+            catch (SQLSyntaxErrorException e){
+                log.info("[fuzz test] a SQL is not syntax correct  ");
+            } catch (SQLNonTransientConnectionException e){ //数据库崩溃的异常
+                errorCnt++;
+            }
+            catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
+        System.out.println("the total fuzz sql number is "+sqlCnt+"  and the error count is "+errorCnt);
 
     }
 }

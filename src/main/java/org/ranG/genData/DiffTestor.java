@@ -6,6 +6,7 @@ import org.ranG.grammar.SqlGenerator.SQLIterator;
 import org.ranG.grammar.SqlGenerator.SQLVisitor;
 
 import java.awt.image.AreaAveragingScaleFilter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -176,6 +177,36 @@ public class DiffTestor {
             }
         }
     }
+    void saveDataTableTofile()  {
+        String query = "SELECT * FROM table_120_binary_4";
+        try{
+            Statement stmt_1 = connMySQL.createStatement();
+            Statement stmt_2 = connMaria.createStatement();
+            ResultSet rs = stmt_1.executeQuery(query);
+            FileWriter writer = new FileWriter("output.txt");
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+            // Write column names to file
+            for (int i = 1; i <= columnCount; i++) {
+                writer.write(rsmd.getColumnName(i) + "\t | ");
+            }
+            writer.write("\n");
+
+            // Write data to file
+            while (rs.next()) {
+                for (int i = 1; i <= columnCount; i++) {
+                    writer.write(rs.getString(i) + "\t | ");
+                }
+                writer.write("\n");
+            }
+
+        }catch (SQLException e ){
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 
     void compare(ArrayList<String> randSql){
 
@@ -231,6 +262,7 @@ public class DiffTestor {
                             float t2 = Float.parseFloat(list2.get(i));
                             if(Math.abs(t1 - t2 )> 0.01){
                                 currentSQLOK = false;
+                                System.out.println("the different result is: MySQL get "+t1+" MariaDB get "+t2);
                                 log.error("[diff testing] find the distinct ,the SQL is"+sql);
                                 break;
                             }
@@ -239,6 +271,7 @@ public class DiffTestor {
                         }
                     }else if(!list2.get(i).equals(list1.get(i))){
                         currentSQLOK = false;
+                        System.out.println("the different result is: MySQL get "+list1.get(i)+" MariaDB get "+list2.get(i));
                         log.error("[diff testing] find the distinct ,the SQL is"+sql);
                         break;
                     }
@@ -247,20 +280,29 @@ public class DiffTestor {
                     equalNum++;
                 }
 
-            }catch (SQLException e){
-                e.printStackTrace();
+            }catch (SQLSyntaxErrorException e){
+                log.info("[diff test] a SQL is not syntax correct  ");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
         }
-        log.info("[diff testing]  result ,the total SQL is "+totalNum+" the valid SQL is "+validNum+" the equal SQL is "+equalNum);
-        System.out.println(totalNum+" "+validNum+" "+equalNum);
-
+        System.out.println("------------------------Test Result------------ ");
+        System.out.println("the total SQL number is "+totalNum+" the valid SQL number is "+validNum+" the same result number is "+equalNum);
+        System.out.printf("potential Bugs :%d, the rate is %.2f",(validNum-equalNum),(float)(validNum-equalNum)/validNum);
+        saveDataTableTofile();
+        /* 获取出现错误的数据表信息 */
     }
 
 
     public void act(){
+        long startTime = System.currentTimeMillis();
         connectDB();
         KeyFun keyF = byDb();
         ArrayList<String> randSqls = getRandSqls(keyF);
+        long endTime = System.currentTimeMillis();
+        long timeCost = endTime-startTime;
+
         compare(randSqls);
+        System.out.printf("generate %d SQL total takes milliseconds: %fs, %.4fs per SQL statement" ,randSqls.size(), (float)timeCost/1000,((float)timeCost/1000/randSqls.size()));
     }
 }
