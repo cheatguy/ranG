@@ -88,6 +88,7 @@ public class Data {
         return cpg;
     }
     public ComposeGen getRecordGen(ArrayList<Fields.FieldExec> field){
+        /* 这部分需要重新描述 */
         Logger log = LoggerUtil.getLogger();
         ArrayList<Generator> gensTmp = new ArrayList<>();
         for(Fields.FieldExec f:field){

@@ -16,19 +16,25 @@ import static org.ranG.Main.zzPath;
 
 public class DdlGenerator {
     String dsn;
-    /* double? ,not sure this global can be used in LuaParser */
     static Globals globals = JsePlatform.standardGlobals();
     public void setDsn(String dsn){
         this.dsn = dsn;
     }
-    /*
-        read lua zz file
-        exec zz file
+    SQLType t;
+    enum SQLType {
+        MYSQL,
+        MARIADB,
+        ALL
+    }
+    public void setType(String dbName){
+        if(dbName.equals("MYSQL")){
+            t = SQLType.MYSQL;
+        }else if(dbName.equals("ALL")){
+            t = SQLType.ALL;
+        }
+    }
 
-        genDdlReturn contains:
-            String[] : sql
-            keyfunc
-     */
+
 
     public ConfigRet getDdl() {
 
@@ -58,16 +64,52 @@ public class DdlGenerator {
         /* return : sql string[] ,keyFunc */
         Logger log = LoggerUtil.getLogger();
         ConfigRet dlls = getDdl();
-        try{
-            Connection conn = DriverManager.getConnection(this.dsn, "root", "jk123j@!?2<d");
-            log.info("connect to sql success");
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from table_10_utf8_4;");
-            System.out.println("the size is " +rs.getFetchSize());
-            System.out.println("null");
-        }catch (SQLException e) {
-            log.error("fail to connect to sql");
-            throw new RuntimeException(e);
+        if(this.t == SQLType.MYSQL){
+            try{
+                Connection conn = DriverManager.getConnection(this.dsn, "root", "jk123j@!?2<d");
+                log.info("connect to sql success");
+                Statement stmt = conn.createStatement();
+                for(String sql:dlls.ddls){
+//                    stmt.executeUpdate(sql);
+                    System.out.println(sql);
+                }
+
+            }catch (SQLSyntaxErrorException e){
+                log.info("[fuzz test] a SQL is not syntax correct  ");
+            } catch (SQLException e) {
+
+                throw new RuntimeException(e);
+            }
+
+        }else if (this.t == SQLType.MARIADB){
+            /* MariaDB */
+            System.out.println("this is mariaDB");
+            try{
+
+                Connection conn = DriverManager.getConnection(this.dsn, "root", "nkl213HJKS&#HG*");
+                Statement stmt = conn.createStatement();
+                for(String sql:dlls.ddls){
+                    stmt.executeUpdate(sql);
+                }
+            }catch (SQLSyntaxErrorException e){
+                log.info("[fuzz test] a SQL is not syntax correct  ");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }else if(this.t ==SQLType.ALL){
+            try{
+                Connection connMaria = DriverManager.getConnection("jdbc:mariadb://localhost:3308/cpy", "root", "nkl213HJKS&#HG*");
+                Connection connMySQL = DriverManager.getConnection("jdbc:mysql://localhost:3306/cpy", "root", "jk123j@!?2<d");
+                Statement stmtMarai = connMaria.createStatement();
+                Statement stmtMySQL = connMySQL.createStatement();
+                for(String sql:dlls.ddls){
+                    stmtMarai.executeUpdate(sql);
+                    stmtMySQL.executeUpdate(sql);
+                }
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+
         }
 
     }

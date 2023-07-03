@@ -1,5 +1,6 @@
 package org.ranG.genData.generators;
 
+import javax.swing.*;
 import java.util.Random;
 
 public class Int implements Generator {
@@ -8,7 +9,7 @@ public class Int implements Generator {
     int min;
     int max;
     String tmpl;
-    public Int(int max,int min,String tmpl){
+    public Int(int min,int max,String tmpl){
         this.max = max;
         this.min = min;
         this.tmpl = tmpl;
@@ -27,5 +28,6 @@ public class Int implements Generator {
             return Integer.toString(intRes);
         }
         return String.format(this.tmpl,intRes);
+//                String.format(this.tmpl,intRes);
     }
 }
