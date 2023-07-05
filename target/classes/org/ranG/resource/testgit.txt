@@ -6,9 +6,5 @@ test
 this is for branch dev
 this is for master branch
 git is a free software
-<<<<<<< HEAD
 not want to comment 
 this is a fixed info
-=======
-not want to comment 
->>>>>>> a6f05afe2929933b6df5581e3f27488215917257
